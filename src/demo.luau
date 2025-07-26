@@ -46,7 +46,7 @@ local function text()
 	local richtext = `<b>bold text</b> <i>italic text</i> <u>underline text</u> <s>strikethrough text</s> <font color= "rgb(240, 40, 10)">red text</font> <font size="32">bigger text</font>`
 	
 	jello.text { text = "default text" }
-	jello.text { text = string.rep("wrapped text", 10), wrapped = true }
+	jello.text { text = string.rep("wrapped text ", 10), wrapped = true }
 	jello.text { text = "colored text", color = Color3.fromRGB(255, 128, 0) }
 	
 	jello.text { text = `richtext: {richtext}`, richText = true, wrapped = true }
@@ -126,6 +126,48 @@ local function recursive_window()
 	end
 end
 
+local function format()
+    jello.seperator { text = "formatting" }
+
+    jello.group { align = "Center", padding = 10 }.with(function()
+        jello.text { text = "this is inside a centered group with padding" }
+        jello.button { text = "button" }
+        jello.checkbox { label = "checkbox" }
+    end)
+
+	jello.seperator()
+
+	jello.group { align = "Right", padding = 10 }.with(function()
+		jello.text { text = "This is inside a right aligned group with padding." }
+        jello.button { text = "button" }
+        jello.checkbox { label = "checkbox" }
+	end)
+
+	jello.seperator()
+
+	jello.text { text = "indent level 0" }
+    
+    jello.indent().with(function()
+        jello.text { text = "indented level 1" }
+        
+        jello.indent().with(function()
+            jello.text { text = "indented level 2" }
+            
+            jello.indent().with(function()
+                jello.text { text = "indented level 3" }
+                jello.checkbox { label = "indented checkbox" }
+            end)
+
+            jello.button { text = "indented button" }
+        end)
+    end)
+	
+	jello.seperator { text = "this is a seperator with text" }
+	jello.seperator()
+	jello.text { text = "above is a seperator without text" }
+end
+
+
 local function bind_checkbox_to_source(label: string, source: jello.source<boolean>)
 	local checkbox = jello.checkbox { label = label }
 	source(checkbox.checked())
@@ -152,6 +194,7 @@ return function()
 		button()
 		radiobutton()
 		textinput()
+		format()
 	end)
 	
 	run_if(state.show_recursive_window, recursive_window)

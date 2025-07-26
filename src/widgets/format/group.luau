@@ -19,9 +19,9 @@ return ui.widget("group", function(arguments: root.partial<arguments>?)
 	list.HorizontalAlignment = alignment
 
 	local object = root.create("Frame") {
-		AutomaticSize = Enum.AutomaticSize.XY,
+		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundTransparency = 1,
-		Size = UDim2.new(0, 0, 0, 0),
+		Size = UDim2.new(1, 0, 0, 0),
 
 		list,
 	}

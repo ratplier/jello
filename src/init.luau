@@ -36,6 +36,8 @@ local jello = {
 
 	row = require(widgets.format.row),
 	seperator = require(widgets.format.seperator),
+	group = require(widgets.format.group),
+	indent = require(widgets.format.indent),
 	
 	window = require(widgets.window),
 	text = require(widgets.text),
