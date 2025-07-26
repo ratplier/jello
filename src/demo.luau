@@ -4,21 +4,15 @@ local internal = require("./internal")
 
 -- showcase
 local function checkbox()
-	jello.header { text = "checkbox" }
-	
 	jello.checkbox { label = "checkbox with label" }
 	
 	local box = jello.checkbox()
 	jello.text {
 		text = `checked: {box.checked()}, clicked: {box.clicked()}, hovered: {box.hovered()}`
 	}
-
-	jello.close()
 end
 
 local function button()
-	jello.seperator { text = "button" }
-
 	jello.row()
 	
 	jello.button { text = "normal button" }
@@ -43,8 +37,6 @@ local function button()
 end
 
 local function text()
-	jello.seperator { text = "text" }
-	
 	local richtext = `<b>bold text</b> <i>italic text</i> <u>underline text</u> <s>strikethrough text</s> <font color= "rgb(240, 40, 10)">red text</font> <font size="32">bigger text</font>`
 	
 	jello.text { text = "default text" }
@@ -55,8 +47,6 @@ local function text()
 end
 
 local function radiobutton()
-    jello.seperator { text = "radiobutton" }
-
     local selected = jello.source("Option 1")
     jello.text { text = "Choose an option:" }
 	jello.text { text = `selected: {selected()}` }
@@ -218,6 +208,16 @@ local function run_if(condition: jello.source<boolean>, fn: () -> ())
 	if condition() then fn() end
 end
 
+local function bind_to_header(text: string, fn: () -> ())
+	jello.header({ title = text, header = true }).with(function()
+		jello.indent().with(fn)
+	end)
+end
+
+local function bind_to_category(text: string, fn: () -> ())
+	jello.header({ title = text }).with(fn)
+end
+
 return function()
 	local state = {
 		show_recursive_window = jello.source(false),
@@ -230,12 +230,18 @@ return function()
 		bind_checkbox_to_source("recursive window", state.show_recursive_window)
 		bind_checkbox_to_source("runtime info", state.show_runtime_info)
 
-		text()
-		checkbox()
-		button()
-		radiobutton()
-		textinput()
-		format()
+		jello.header { title = "widgets" }.with(function()
+			jello.text { text = "widgets" }
+		end)
+
+		bind_to_header("widgets", function()
+			bind_to_category("text", text)
+			bind_to_category("checkbox", checkbox)
+			bind_to_category("button", button)
+			bind_to_category("radiobutton", radiobutton)
+			bind_to_category("textinput", textinput)
+			bind_to_category("format", format)
+		end)
 	end)
 	
 	run_if(state.show_recursive_window, recursive_window)

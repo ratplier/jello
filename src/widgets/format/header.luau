@@ -5,46 +5,45 @@ local paint = require("../../utils/paint")
 local config = require("../../config")
 
 local assets = config.assets
+local header_size = 18
 
 type source<T> = root.source<T>
 type partial<T> = root.partial<T>
 
-type state = {}
+type state = {
+    collapsed: source<boolean>,
+    hovered: source<boolean>,
+    clicked: source<boolean>,
+}
 export type arguments = {
     title: string,
     header: boolean,
+    padding: number,
 }
 
-return ui.widget("header", function(arguments: partial<arguments>?)
-    local args = root.default(arguments, { title = "Header", header = false, }) :: arguments
-    local clicked = root.event()
-
-    local state = {
-        collapsed = root.source(false),
-        hovered = root.source(false),
-        clicked = clicked.fired,
-    }
-
-    local content_height = config.textSize - 1.5
-    local header_size = 18
-    local contents = root.create("Frame") {
+local function contents(state: state, args: arguments)
+    return root.create("Frame") {
         AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundTransparency = 1,
         LayoutOrder = 3,
 
-        Position = UDim2.fromOffset(0, header_size + 5),
+        Position = UDim2.fromOffset(0, header_size),
         Size = UDim2.fromScale(1, 0),
 
         Visible = not state.collapsed(),
 
-        ui.list_layout("Vertical", 5),
+        ui.list_layout("Vertical", 0),
     }
+end
 
-    local object = root.create("Frame") {
-        AutomaticSize = Enum.AutomaticSize.Y,
-        Size = UDim2.new(1, 0, 0, header_size),
+local function header(state: state, args: arguments)
+    local content_height = header_size / 2
 
-        ui.padding(5),
+    return root.create("Frame") {
+        AutomaticSize = Enum.AutomaticSize.XY,
+        BackgroundTransparency = 1,
+
+        ui.list_layout("Horizontal", args.padding),
 
         root.create("ImageLabel") {
             Active = true,
@@ -62,16 +61,13 @@ return ui.widget("header", function(arguments: partial<arguments>?)
             paint.image(),
             ui.clicked("Button1", function()
                 state.collapsed(not state.collapsed())
-                clicked.fire()
+                state.clicked(true)
             end),
         },
 
         root.create("TextLabel") {
-            AnchorPoint = Vector2.new(0, 0.5),
             AutomaticSize = Enum.AutomaticSize.XY,
             BackgroundTransparency = 1,
-
-            Position = UDim2.new(0, header_size + 5, 0, header_size / 4),
             LayoutOrder = 2,
 
             Text = args.title,
@@ -79,13 +75,32 @@ return ui.widget("header", function(arguments: partial<arguments>?)
 
             ui.clicked("Button1", function()
                 state.collapsed(not state.collapsed())
-                clicked.fire()
+                state.clicked(true)
             end),
-        },
-        
-        contents,
-        paint.header(state.clicked, state.hovered, args.header),
+        }
+    }
+end
 
+return ui.widget("header", function(arguments: partial<arguments>?)
+    local args = root.default(arguments, { title = "Header", padding = 5, header = false, }) :: arguments
+
+    local clicked = root.event()
+    local state: state = {
+        collapsed = root.source(true),
+        hovered = root.source(false),
+        clicked = root.derive(clicked.fired),
+    }
+
+    local contents = contents(state, args)
+    local object = root.create("Frame") {
+        AutomaticSize = Enum.AutomaticSize.Y,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 0, header_size),
+
+        contents,
+        header(state, args),
+
+        ui.padding(args.padding),
         ui.hovered(state.hovered),
     }
 
