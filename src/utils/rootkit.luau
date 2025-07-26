@@ -41,6 +41,7 @@ local kit = {
 	gen_id = internal.gen_id,
 	throw = internal.throw,
 	assert = internal.assert,
+	read = internal.read,
 }
 
 function kit.get_tick()
@@ -130,6 +131,18 @@ end
 
 function kit.apply(instance: Instance, properties: internal.props)
 	return internal.apply(instance, properties)
+end
+
+function kit.event(): { fire: () -> (), fired: () -> boolean }
+	local last_updated = internal.source(-1)
+	return {
+		fire = function()
+			last_updated(internal._tick)
+		end,
+		fired = function()
+			return last_updated() == internal._tick
+		end
+	}
 end
 
 return kit

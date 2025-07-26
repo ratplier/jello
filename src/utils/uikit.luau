@@ -130,6 +130,13 @@ function kit.flexitem(name: flexMode)
 	}
 end
 
+function kit.hovered(fn: (boolean) -> ())
+	return {
+		kit.entered(function() fn(true) end),
+		kit.exited(function() fn(false) end),
+	}
+end
+
 kit.padding = function(...)
 	local t,b,l,r
 	local args = { ... }
