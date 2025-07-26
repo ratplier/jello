@@ -1,0 +1,9 @@
+{
+    "name": "jello",
+    "tree": {
+        "$className": "DataModel",
+        "ReplicatedStorage": {
+            "jello": { "$path": "src" }
+        }
+    }
+}
