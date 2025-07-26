@@ -4,12 +4,12 @@ local UserInputService = game:GetService("UserInputService")
 local config = require("../config")
 local root = require("../utils/rootkit")
 local ui = require("../utils/uikit")
+local paint = require("../utils/paint")
 
 local START_POSITION = vector.create(200, 200)
 local OFFSET_INCREMENT = vector.create(30, 30)
 
 local assets = config.assets
-local colors = config.colors
 
 type source<T> = root.source<T>
 type partial<T> = root.partial<T>
@@ -139,12 +139,7 @@ local function topbar(state: state, args: arguments)
 
 		ui.padding(5, 10),
 		ui.list_layout("Horizontal", 10),
-		ui.apply_color("Background", function()
-			return
-				if state.collasped() then colors.TitleBgCollapsed
-				elseif not state.active() then colors.TitleBgDisabled
-				else colors.TitleBg
-		end),
+		paint.title(state.active, state.collasped),
 		
 		root.conditional(not args.noMinimize, function()
 			return root.create("ImageLabel") {
@@ -163,7 +158,7 @@ local function topbar(state: state, args: arguments)
 						else assets.downPointingTriangle
 				end,
 				
-				ui.apply_color("Image", colors.Image),
+				paint.image(),
 				ui.clicked("Button1", function()
 					state.collasped(not state.collasped())
 				end),
@@ -183,11 +178,7 @@ local function topbar(state: state, args: arguments)
 				Font = config.font,
 				
 				ui.flexitem("Fill"),
-				ui.apply_color("Text", function()
-					return
-						if state.active() then colors.Text
-						else colors.TextDisabled
-				end),
+				paint.text(state.active),
 			}
 		end),
 
@@ -203,7 +194,7 @@ local function topbar(state: state, args: arguments)
 
 				Image = assets.xCloseIcon,
 
-				ui.apply_color("Image", colors.Image),
+				paint.image(),
 				--TODO: implement closing listeners
 			}
 		end),
@@ -223,7 +214,7 @@ local function resize_grip(state: state, args: arguments)
 		Visible = not state.collasped(),
 		ZIndex = 2,
 		
-		ui.apply_color("Image", colors.ResizeGrip),
+		paint.resize_grip(),
 		wm.register(function(x, y)
 			local last_size = state.size()
 			local target_size = last_size - vector.create(x, y)
@@ -291,11 +282,7 @@ return ui.widget("window", function(arguments: partial<arguments>?)
 		topbar,
 		
 		root.conditional(not args.noResize, resize_grip, state, args),
-		ui.apply_color("Background", function()
-			return
-				if state.collasped() then colors.WindowBgCollapsed
-				else colors.WindowBg
-		end),
+		paint.window(state.collasped),
 		
 		ui.clicked("Button1", function()
 			wm.push_to_top(topbar)
