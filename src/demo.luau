@@ -105,7 +105,46 @@ local function runtime_info()
 	jello.text { text = `avarage {avg_ms} ms/frame ({avg_fps} fps)` }
 	jello.text { text = `current tick: {internal._tick}` }
 	jello.text { text = `window position: {window.position()}` }
+
+	jello.seperator { text = "enviroment data" }
 	
+	local instance = internal._parent_stack[#internal._parent_stack]
+	local id = jello.source( internal._instance_to_id[instance] ) 
+	local object = internal._vdom[id()]
+	local meta = internal._instance_metadata[instance]
+
+	local input = jello.textinput {
+		placeholder = "enter an object's id",
+		wrapped = true,
+		text = id(),
+	}
+
+	if input.text_changed() then
+		id(input.text())
+	end
+
+	if object == nil or meta == nil then
+		jello.text { text = "invalid id" }
+	else
+		local metadata = {
+			path = instance:GetFullName(),
+			class_name = instance.ClassName,
+
+			properties = object.properties,
+			actions = meta.actions,
+			connections = meta.connections,
+		}
+
+		jello.group { padding = 2 }
+
+		jello.text { text = `path: {metadata.path}` }
+		jello.text { text = `class name: {metadata.class_name}` }
+		jello.text { text = `actions count: {#metadata.actions}` }
+		jello.text { text = `connections count: {#metadata.connections}` }
+
+		jello.close()
+	end
+
 	jello.close()
 end
 
