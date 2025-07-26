@@ -35,9 +35,19 @@ end
 function paint.title(active: value<boolean>?, collapsed: value<boolean>?)
     return ui.apply_color("Background", function()
         return
-            if read(active) == true then colors.TitleBg
-            elseif read(collapsed) == true then colors.TitleBgCollapsed
+            if read(collapsed) == true then colors.TitleBgCollapsed
+            elseif read(active) == true then colors.TitleBg
             else colors.TitleBgDisabled
+    end)
+end
+
+function paint.header(clicked: value<boolean>?, hovered: value<boolean>?, header: boolean?)
+    return ui.apply_color("Background", function()
+        return
+            if header ~= true then colors.NoHeader
+            elseif read(clicked) == true then colors.HeaderActive
+            elseif read(hovered) == true then colors.HeaderHovered
+            else colors.Header
     end)
 end
 

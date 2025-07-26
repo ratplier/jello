@@ -6,6 +6,7 @@ license = "MIT"
 
 [target]
 environment = "roblox"
+build_files = ["src"] 
 
 [indices]
 default = "https://github.com/pesde-pkg/index"

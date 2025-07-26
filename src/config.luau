@@ -22,6 +22,11 @@ return {
 		FrameBg = color4.create(41, 74, 122, 0.64),
 		FrameBgHovered = color4.create(41, 74, 122, 0.64),
 		FrameBgActive = color4.create(41, 74, 122, 0.33),
+
+		Header = color4.create(66, 150, 250, 0.31),
+		NoHeader = color4.create(0, 0, 0, 0),
+		HeaderHovered = color4.create(66, 150, 250, 0.62),
+		HeaderActive = color4.create(15, 135, 250, 1),
 		
 		Seperator = color4.create(99, 99, 99, 0.62),
 		RadialCenter = color4.create(66, 150, 250, 1),
