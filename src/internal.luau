@@ -191,6 +191,7 @@ local internal = {
 	_env = 'root',
 	_debug = false,
 	_paused = false,
+	_instances = instances,
 	_parent_stack_length = 0,
 	_target = nil :: Instance?,
 	_pushed_ids = {} :: { id },
@@ -199,6 +200,7 @@ local internal = {
 	_used_ids = {} :: { [id]: number },
 	_parent_stack = {} :: { Instance },
 	_last_vdom = {} :: { [id]: object },
+	_instance_metadata = instance_metadata,
 	_listeners = {} :: { [() -> ()]: true },
 	_config = nil :: ((Instance, props) -> ())?,
 
