@@ -15,12 +15,17 @@ return {
 		TitleBgDisabled = color4.create(10, 10, 10, 1),
 		TitleBgCollapsed = color4.create(0, 0, 0, 0.6),
 		
-		Button = color4.create(66, 1150, 250, 0.4),
+		Button = color4.create(66, 115, 250, 0.4),
 		ButtonHovered = color4.create(66, 150, 250, 1),
 		ButtonActive = color4.create(15, 135, 250, 1),
 		
-		Seperator = color4.create(99, 99, 99, 0.62),
+		FrameBg = color4.create(41, 74, 122, 0.64),
+		FrameBgHovered = color4.create(41, 74, 122, 0.64),
+		FrameBgActive = color4.create(41, 74, 122, 0.33),
 		
+		Seperator = color4.create(99, 99, 99, 0.62),
+		RadialCenter = color4.create(66, 150, 250, 1),
+
 		Image = color4.create(255, 255, 255, 1),
 	},
 	assets = {

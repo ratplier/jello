@@ -41,6 +41,7 @@ local jello = {
 	text = require(widgets.text),
 	checkbox = require(widgets.checkbox),
 	button = require(widgets.button),
+	radiobutton = require(widgets.radiobutton),
 }
 
 function jello.create(class_name: string)

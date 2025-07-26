@@ -3,6 +3,8 @@ local internal = require("../internal")
 
 export type source<T> = internal.source<T>
 export type value<T> = source<T> | T
+export type props = internal.props
+
 type function _partial(object: type)
 	local tag = object.tag
 
@@ -124,6 +126,10 @@ end
 
 function kit.destroyed(fn: () -> ())
 	return { Destroying = fn, } :: any
+end
+
+function kit.apply(instance: Instance, properties: internal.props)
+	return internal.apply(instance, properties)
 end
 
 return kit

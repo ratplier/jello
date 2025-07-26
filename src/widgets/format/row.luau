@@ -23,5 +23,5 @@ return ui.widget("row", function(arguments: root.partial<arguments>?)
 	}
 
 	root.mount(object)
-	return ui.start_scope(object, {}) :: state
+	return ui.start_scope(object, {})
 end)

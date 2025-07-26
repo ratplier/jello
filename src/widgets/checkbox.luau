@@ -32,12 +32,8 @@ return ui.widget("checkbox", function(arguments: partial<arguments>?)
 		end),
 	}
 	
-	if args.label then
-		row()
-	end
-	
-	root.mount(function()
-		return root.create("Frame") {
+	row().with(function()
+		local checkbox = root.create("Frame") {
 			Active = true,
 			Size = UDim2.fromOffset(18, 18),
 			
@@ -67,12 +63,12 @@ return ui.widget("checkbox", function(arguments: partial<arguments>?)
 				last_click( root.get_tick() )
 			end),
 		}
-	end)
-	
-	if args.label then
-		text({ text = args.label })
-		root.close_scope()
-	end
+		
+		if args.label then
+			text { text = args.label }
+		end
 
+		root.mount(checkbox)
+	end)
 	return state
 end)

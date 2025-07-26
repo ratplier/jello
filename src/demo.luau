@@ -52,6 +52,24 @@ local function text()
 	jello.text { text = `richtext: {richtext}`, richText = true, wrapped = true }
 end
 
+local function radiobutton()
+    jello.seperator { text = "radiobutton" }
+
+    local selected = jello.source("Option 1")
+    jello.text { text = "Choose an option:" }
+	jello.text { text = `selected: {selected()}` }
+
+    local options = { "Option 1", "Option 2", "Option 3" }
+
+	jello.row()
+
+    for _, option in options do
+        jello.radiobutton { index = option, text = option, state = selected }
+    end
+
+    jello.close()
+end
+
 -- windows
 local function runtime_info()
 	local window = jello.window {
@@ -120,6 +138,7 @@ return function()
 		text()
 		checkbox()
 		button()
+		radiobutton()
 	end)
 	
 	run_if(state.show_recursive_window, recursive_window)

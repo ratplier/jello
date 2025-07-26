@@ -118,6 +118,12 @@ function kit.corner(radius: number)
 	}
 end
 
+function kit.circle()
+	return internal.create("UICorner") {
+		CornerRadius = UDim.new(1, 0),
+	}
+end
+
 function kit.flexitem(name: flexMode)
 	return internal.create("UIFlexItem") {
 		FlexMode = Enum.UIFlexMode:FromName(name)
