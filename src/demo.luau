@@ -4,7 +4,7 @@ local internal = require("./internal")
 
 -- showcase
 local function checkbox()
-	jello.seperator { text = "checkbox" }
+	jello.header { text = "checkbox" }
 	
 	jello.checkbox { label = "checkbox with label" }
 	
@@ -12,6 +12,8 @@ local function checkbox()
 	jello.text {
 		text = `checked: {box.checked()}, clicked: {box.clicked()}, hovered: {box.hovered()}`
 	}
+
+	jello.close()
 end
 
 local function button()
@@ -67,7 +69,7 @@ local function radiobutton()
         jello.radiobutton { index = option, text = option, state = selected }
     end
 
-    jello.close()
+	jello.close()
 end
 
 local function textinput()
@@ -80,6 +82,47 @@ local function textinput()
 	end
 
     jello.text { text = `value: {value()}` }
+end
+
+local function format()
+    jello.seperator { text = "formatting" }
+
+    jello.group { align = "Center", padding = 10 }.with(function()
+        jello.text { text = "this is inside a centered group with padding" }
+        jello.button { text = "button" }
+        jello.checkbox { label = "checkbox" }
+    end)
+
+	jello.seperator()
+
+	jello.group { align = "Right", padding = 10 }.with(function()
+		jello.text { text = "This is inside a right aligned group with padding." }
+        jello.button { text = "button" }
+        jello.checkbox { label = "checkbox" }
+	end)
+
+	jello.seperator()
+
+	jello.text { text = "indent level 0" }
+    
+    jello.indent().with(function()
+        jello.text { text = "indented level 1" }
+        
+        jello.indent().with(function()
+            jello.text { text = "indented level 2" }
+            
+            jello.indent().with(function()
+                jello.text { text = "indented level 3" }
+                jello.checkbox { label = "indented checkbox" }
+            end)
+
+            jello.button { text = "indented button" }
+        end)
+    end)
+	
+	jello.seperator { text = "this is a seperator with text" }
+	jello.seperator()
+	jello.text { text = "above is a seperator without text" }
 end
 
 -- windows
@@ -165,47 +208,6 @@ local function recursive_window()
 	end
 end
 
-local function format()
-    jello.seperator { text = "formatting" }
-
-    jello.group { align = "Center", padding = 10 }.with(function()
-        jello.text { text = "this is inside a centered group with padding" }
-        jello.button { text = "button" }
-        jello.checkbox { label = "checkbox" }
-    end)
-
-	jello.seperator()
-
-	jello.group { align = "Right", padding = 10 }.with(function()
-		jello.text { text = "This is inside a right aligned group with padding." }
-        jello.button { text = "button" }
-        jello.checkbox { label = "checkbox" }
-	end)
-
-	jello.seperator()
-
-	jello.text { text = "indent level 0" }
-    
-    jello.indent().with(function()
-        jello.text { text = "indented level 1" }
-        
-        jello.indent().with(function()
-            jello.text { text = "indented level 2" }
-            
-            jello.indent().with(function()
-                jello.text { text = "indented level 3" }
-                jello.checkbox { label = "indented checkbox" }
-            end)
-
-            jello.button { text = "indented button" }
-        end)
-    end)
-	
-	jello.seperator { text = "this is a seperator with text" }
-	jello.seperator()
-	jello.text { text = "above is a seperator without text" }
-end
-
 
 local function bind_checkbox_to_source(label: string, source: jello.source<boolean>)
 	local checkbox = jello.checkbox { label = label }
@@ -227,7 +229,7 @@ return function()
 		
 		bind_checkbox_to_source("recursive window", state.show_recursive_window)
 		bind_checkbox_to_source("runtime info", state.show_runtime_info)
-		
+
 		text()
 		checkbox()
 		button()

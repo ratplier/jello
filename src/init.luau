@@ -26,6 +26,7 @@ end
 local function error_handler(message: string)
 	internal._paused = true
 	warn(message)
+	print(debug.traceback())
 end
 
 local jello = {
@@ -38,6 +39,7 @@ local jello = {
 	seperator = require(widgets.format.seperator),
 	group = require(widgets.format.group),
 	indent = require(widgets.format.indent),
+	header = require(widgets.format.header),
 	
 	window = require(widgets.window),
 	text = require(widgets.text),

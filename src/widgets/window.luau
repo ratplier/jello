@@ -241,7 +241,7 @@ local function contents(state: state, args: arguments)
 		ScrollBarThickness = 0,
 		
 		ui.padding(10),
-		ui.list_layout("Vertical", 10)
+		ui.list_layout("Vertical", 5)
 	}
 end
 
