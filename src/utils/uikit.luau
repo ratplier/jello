@@ -28,9 +28,12 @@ end
 
 function kit.is_mouse_over(object: GuiObject)
 	local inset = GuiService:GetGuiInset()
-	local playergui = (Players.LocalPlayer::Player).PlayerGui
 	local position = kit.mouse_position()
+	local player = Players.LocalPlayer :: Player
+	local playergui = player:FindFirstChildOfClass("PlayerGui")
 	
+	if not playergui then return false end
+
 	local px, py = position.x - inset.X, position.y - inset.Y
 	local instances = playergui:GetGuiObjectsAtPosition(px, py)
 	local clicked_object = instances[1]
@@ -62,9 +65,9 @@ function kit.exited(callback: (self: GuiObject) -> ())
 end
 
 function kit.clicked(mouse_button: value<mouseButton>, callback: (self: GuiObject, x: number, y: number) -> ())
-	local mouse_button = internal.read(mouse_button)
+	mouse_button = internal.read(mouse_button) :: mouseButton
+	
 	local input_type = Enum.UserInputType:FromName(`Mouse{mouse_button}`) or Enum.UserInputType.MouseButton1
-
 	return {
 		InputEnded = function(self, input: InputObject)
 			if input.UserInputType ~= input_type then return end
@@ -74,16 +77,16 @@ function kit.clicked(mouse_button: value<mouseButton>, callback: (self: GuiObjec
 	}
 end
 
-function kit.apply_color(key: value<string>, color: value<color4>)
-	local key = internal.read(key) :: string
-	local color = internal.read(color) :: color4
+function kit.apply_color(property: value<string>, color: value<color4>)
+	local key = internal.read(property) :: string
+	local value = internal.read(color) :: color4
 
 	local colorIndex = `{key}Color3`
 	local transparencyIndex = `{key}Transparency`
 
 	return {
-		[transparencyIndex] = color4.read_alpha(color),
-		[colorIndex] = color4.read_color3(color) :: any,
+		[transparencyIndex] = color4.read_alpha(value),
+		[colorIndex] = color4.read_color3(value) :: any,
 	}
 end
 

@@ -11,7 +11,10 @@ type function _partial(object: type)
 
 		for _, component in object:components() do
 			if component.tag == "nil" then continue end
-			if result == nil then result = component continue end
+			if result == nil then
+				result = component
+				continue
+			end
 
 			result = types.unionof(result, component)
 		end
@@ -50,7 +53,7 @@ function kit.create(class_name: string)
 end
 
 function kit.gen_id(ignore_levels: number?, prefix: string?)
-	local ignore_levels = (ignore_levels or 0) + 1
+	ignore_levels = (ignore_levels or 0) + 1
 	return internal.gen_id(ignore_levels, prefix)
 end
 
@@ -85,7 +88,8 @@ end
 function kit.once(fn: () -> ())
 	local started = internal.source(false)
 	if started() == false then
-		fn() started(true)
+		fn()
+		started(true)
 	end
 end
 

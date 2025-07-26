@@ -11,7 +11,7 @@ export type source<T> = internal.source<T>
 
 local function create_target()
 	local player = Players.LocalPlayer
-	local player_gui = player and player:FindFirstAncestorOfClass("PlayerGui")
+	local player_gui = player and player:FindFirstChildOfClass("PlayerGui")
 	
 	local root = Instance.new("ScreenGui")
 	root.IgnoreGuiInset = false
@@ -28,15 +28,14 @@ local function error_handler(message: string)
 	warn(message)
 end
 
-local format = require(widgets.format)
 local jello = {
 	update_frequency = -1,
 	version = "0.1.0",
 	_initialized = nil :: boolean?,
 	_target = nil :: Instance?,
 
-	row = format.row,
-	seperator = format.seperator,
+	row = require(widgets.format.row),
+	seperator = require(widgets.format.seperator),
 	
 	window = require(widgets.window),
 	text = require(widgets.text),
@@ -134,7 +133,7 @@ function jello.init(args: init_args?)
 			while accumulator >= jello.update_frequency do
 				internal.profile("step")
 				
-				local ok, result = xpcall(jello.step :: any, error_handler)
+				xpcall(jello.step :: any, error_handler)
 				accumulator -= jello.update_frequency
 				
 				internal.endprofile()

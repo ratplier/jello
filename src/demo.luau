@@ -31,7 +31,7 @@ local function button()
 	jello.row()
 	
 	local btn = jello.button { text = `click me!` }
-	local text = jello.text { text = `counter is at {counter()}` }
+	jello.text { text = `counter is at {counter()}` }
 	
 	jello.close()
 	
