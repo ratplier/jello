@@ -15,8 +15,8 @@ return {
 		TitleBgDisabled = color4.create(10, 10, 10, 1),
 		TitleBgCollapsed = color4.create(0, 0, 0, 0.6),
 		
-		Button = color4.create(66, 115, 250, 0.4),
-		ButtonHovered = color4.create(66, 150, 250, 1),
+		Button = color4.create(66, 150, 250, 0.4),
+		ButtonHovered = color4.create(66, 150, 250, 0.6),
 		ButtonActive = color4.create(15, 135, 250, 1),
 		
 		FrameBg = color4.create(41, 74, 122, 0.64),

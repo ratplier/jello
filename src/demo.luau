@@ -70,6 +70,18 @@ local function radiobutton()
     jello.close()
 end
 
+local function textinput()
+    jello.seperator { text = "textinput" }
+
+    local value = jello.source("")
+    local input = jello.textinput { multiLine = true, placeholder = "enter your name" }
+	if input.text_changed() then
+		value(input.text())
+	end
+
+    jello.text { text = `value: {value()}` }
+end
+
 -- windows
 local function runtime_info()
 	local window = jello.window {
@@ -139,6 +151,7 @@ return function()
 		checkbox()
 		button()
 		radiobutton()
+		textinput()
 	end)
 	
 	run_if(state.show_recursive_window, recursive_window)
