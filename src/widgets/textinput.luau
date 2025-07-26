@@ -18,6 +18,7 @@ export type arguments = {
 	text: string,
 	placeholder: string,
 	multiLine: boolean?,
+    wrapped: boolean?,
     readOnly: boolean?,
 }
 
@@ -26,7 +27,8 @@ return ui.widget("textinput", function(arguments: partial<arguments>?)
         multiLine = false,
         readOnly = false,
         placeholder = "",
-        text = ""
+        text = "",
+        wrapped = false,
     }) :: arguments
 
     local last_text_change = root.source(-1)
@@ -54,7 +56,7 @@ return ui.widget("textinput", function(arguments: partial<arguments>?)
 			PlaceholderText = args.placeholder,
             TextEditable = not args.readOnly,
             MultiLine = args.multiLine,
-            TextWrapped = args.multiLine,
+            TextWrapped = args.multiLine or args.wrapped,
 
             Focused = function(self: TextBox)
                 state.focused( true )
