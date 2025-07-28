@@ -66,7 +66,7 @@ local function textinput()
     jello.seperator { text = "textinput" }
 
     local value = jello.source("")
-    local input = jello.textinput { multiLine = true, placeholder = "enter your name" }
+    local input = jello.textinput { placeholder = "enter your name" }
 	if input.text_changed() then
 		value(input.text())
 	end
@@ -75,7 +75,7 @@ local function textinput()
 end
 
 local function group()
-	jello.seperator { text = "group" }
+	jello.seperator { text = "centered group" }
 	
     jello.group { align = "Center", padding = 10 }.with(function()
         jello.text { text = "this is inside a centered group with padding" }
@@ -83,7 +83,7 @@ local function group()
         jello.checkbox { label = "checkbox" }
     end)
 
-	jello.seperator()
+	jello.seperator { text = "right aligned group" }
 
 	jello.group { align = "Right", padding = 10 }.with(function()
 		jello.text { text = "This is inside a right aligned group with padding." }
