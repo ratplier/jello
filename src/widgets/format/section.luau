@@ -30,7 +30,7 @@ local function header(args: arguments, state: state)
 
         paint.no_background(),
         ui.hovered(state.hovered),
-        ui.padding(config.padding),
+        ui.padding(0, 0, config.padding / 2, 0),
         ui.list_layout("Horizontal", config.padding),
 
         ui.clicked("Button1", function()
@@ -87,8 +87,8 @@ return ui.widget("section", function(arguments: partial<arguments>?)
         AutomaticSize = Enum.AutomaticSize.Y,
         Size = UDim2.fromScale(1, 0),
 
-        header(args, state),
         contents,
+        header(args, state),
 
         ui.list_layout("Vertical", config.padding),
         paint.no_background(),
