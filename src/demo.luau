@@ -137,7 +137,7 @@ local function runtime_info()
 
 	jello.seperator { text = "enviroment data" }
 	
-	local instance = internal._parent_stack[#internal._parent_stack]
+	local instance = internal._parent_stack[#internal._parent_stack].Parent :: Instance
 	local id = jello.source( internal._instance_to_id[instance] ) 
 	local object = internal._vdom[id()]
 	local meta = internal._instance_metadata[instance]
