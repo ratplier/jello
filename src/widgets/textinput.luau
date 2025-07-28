@@ -34,6 +34,7 @@ return ui.widget("textinput", function(arguments: partial<arguments>?)
     local last_text_change = root.source(-1)
 	local state = {
 		focused = root.source(false),
+        hovered = root.source(false),
 		text = root.source(args.text),
 		text_changed = root.derive(function()
             return last_text_change() >= root.get_tick()
@@ -68,6 +69,7 @@ return ui.widget("textinput", function(arguments: partial<arguments>?)
             end,
 
             ui.padding(5),
+            ui.hovered(state.hovered),
 			ui.apply_color("Text", colors.Text),
             ui.apply_color("Background", colors.FrameBg),
 		}
