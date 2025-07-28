@@ -8,7 +8,9 @@ local colors = config.colors
 type source<T> = root.source<T>
 type partial<T> = root.partial<T>
 
-export type state = {}
+export type state = {
+	hovered: source<boolean>,
+}
 export type arguments = {
 	text: string?,
 	richText: boolean?,
@@ -18,6 +20,9 @@ export type arguments = {
 
 return ui.widget("text", function(arguments: partial<arguments>?)
 	local args = root.default(arguments, {}) :: arguments
+	local state: state = {
+		hovered = root.source(false),
+	}
 	
 	root.mount(function()
 		return root.create("TextLabel") {
@@ -32,6 +37,7 @@ return ui.widget("text", function(arguments: partial<arguments>?)
 			Font = config.font,
 			
 			ui.apply_color("Text", colors.Text),
+			ui.hovered(state.hovered),
 			
 			Text = root.default(args.text, "text"),
 			TextWrapped = root.default(args.wrapped, false),
@@ -43,5 +49,5 @@ return ui.widget("text", function(arguments: partial<arguments>?)
 		}
 	end)
 	
-	return {} :: state
+	return state
 end)
