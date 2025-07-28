@@ -9,7 +9,6 @@ type partial<T> = root.partial<T>
 type source<T> = root.source<T>
 
 export type arguments = { text: string? }
-type state = {}
 
 return ui.widget("seperator", function(arguments: partial<arguments>?)
 	local args = root.default(arguments, {}) :: arguments

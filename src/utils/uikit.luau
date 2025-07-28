@@ -173,7 +173,8 @@ function kit.widget<C, T, A...>(name: string, constructor: widgetConstructor<T, 
 	end :: any
 end
 
-function kit.start_scope<T>(target: Instance, state: T & any): T & { with: (scope: () -> ()) -> () }
+function kit.start_scope<T>(target: Instance, state: (T & any)?): T & { with: (scope: () -> ()) -> () }
+	state = if type(state) == "table" then state else {} :: T
 	(state::any).with = internal.scope
 	internal.push_parent(target)
 	return state

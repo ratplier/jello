@@ -5,7 +5,6 @@ local ui = require("../../utils/uikit")
 type source<T> = root.source<T>
 type partial<T> = root.partial<T>
 
-type state = {}
 export type arguments = {
 	height: number,
 	padding: number,
@@ -23,5 +22,5 @@ return ui.widget("row", function(arguments: root.partial<arguments>?)
 	}
 
 	root.mount(object)
-	return ui.start_scope(object, {})
+	return ui.start_scope(object)
 end)
