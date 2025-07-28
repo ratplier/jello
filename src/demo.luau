@@ -204,7 +204,7 @@ local function run_if(condition: jello.source<boolean>, fn: () -> ())
 	if condition() then fn() end
 end
 
-local function bind_to_header(text: string, fn: () -> ())
+local function bind_to_section(text: string, fn: () -> ())
 	jello.section({ text = text }).with(fn)
 end
 
@@ -220,13 +220,13 @@ return function()
 		bind_checkbox_to_source("recursive window", state.show_recursive_window)
 		bind_checkbox_to_source("runtime info", state.show_runtime_info)
 
-		bind_to_header("text", text)
-		bind_to_header("checkbox", checkbox)
-		bind_to_header("button", button)
-		bind_to_header("radiobutton", radiobutton)
-		bind_to_header("textinput", textinput)
-		bind_to_header("group", group)
-		bind_to_header("indent", indent)
+		bind_to_section("text", text)
+		bind_to_section("checkbox", checkbox)
+		bind_to_section("button", button)
+		bind_to_section("radiobutton", radiobutton)
+		bind_to_section("textinput", textinput)
+		bind_to_section("group", group)
+		bind_to_section("indent", indent)
 	end)
 	
 	run_if(state.show_recursive_window, recursive_window)
