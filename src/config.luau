@@ -46,5 +46,5 @@ return {
 	minWindowSize = vector.create(200, 100),
 	cornerRadius = 5,
 	textSize = 14,
-	
+	padding = 4,
 }

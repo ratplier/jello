@@ -74,9 +74,9 @@ local function textinput()
     jello.text { text = `value: {value()}` }
 end
 
-local function format()
-    jello.seperator { text = "formatting" }
-
+local function group()
+	jello.seperator { text = "group" }
+	
     jello.group { align = "Center", padding = 10 }.with(function()
         jello.text { text = "this is inside a centered group with padding" }
         jello.button { text = "button" }
@@ -90,9 +90,9 @@ local function format()
         jello.button { text = "button" }
         jello.checkbox { label = "checkbox" }
 	end)
+end
 
-	jello.seperator()
-
+local function indent()
 	jello.text { text = "indent level 0" }
     
     jello.indent().with(function()
@@ -109,10 +109,6 @@ local function format()
             jello.button { text = "indented button" }
         end)
     end)
-	
-	jello.seperator { text = "this is a seperator with text" }
-	jello.seperator()
-	jello.text { text = "above is a seperator without text" }
 end
 
 -- windows
@@ -209,13 +205,7 @@ local function run_if(condition: jello.source<boolean>, fn: () -> ())
 end
 
 local function bind_to_header(text: string, fn: () -> ())
-	jello.header({ title = text, header = true }).with(function()
-		jello.indent().with(fn)
-	end)
-end
-
-local function bind_to_category(text: string, fn: () -> ())
-	jello.header({ title = text }).with(fn)
+	fn()
 end
 
 return function()
@@ -230,18 +220,13 @@ return function()
 		bind_checkbox_to_source("recursive window", state.show_recursive_window)
 		bind_checkbox_to_source("runtime info", state.show_runtime_info)
 
-		jello.header { title = "widgets" }.with(function()
-			jello.text { text = "widgets" }
-		end)
-
-		bind_to_header("widgets", function()
-			bind_to_category("text", text)
-			bind_to_category("checkbox", checkbox)
-			bind_to_category("button", button)
-			bind_to_category("radiobutton", radiobutton)
-			bind_to_category("textinput", textinput)
-			bind_to_category("format", format)
-		end)
+		bind_to_header("text", text)
+		bind_to_header("checkbox", checkbox)
+		bind_to_header("button", button)
+		bind_to_header("radiobutton", radiobutton)
+		bind_to_header("textinput", textinput)
+		bind_to_header("group", group)
+		bind_to_header("indent", indent)
 	end)
 	
 	run_if(state.show_recursive_window, recursive_window)
