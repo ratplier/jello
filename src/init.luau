@@ -40,6 +40,7 @@ local jello = {
 	group = require(widgets.format.group),
 	indent = require(widgets.format.indent),
 	section = require(widgets.format.section),
+	header = require(widgets.format.header),
 	
 	window = require(widgets.window),
 	text = require(widgets.text),

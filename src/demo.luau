@@ -208,6 +208,10 @@ local function bind_to_section(text: string, fn: () -> ())
 	jello.section({ text = text }).with(fn)
 end
 
+local function construct_header(name: string, fn: () -> ())
+	jello.header({ text = name }).with(fn)
+end
+
 return function()
 	local state = {
 		show_recursive_window = jello.source(false),
@@ -220,13 +224,15 @@ return function()
 		bind_checkbox_to_source("recursive window", state.show_recursive_window)
 		bind_checkbox_to_source("runtime info", state.show_runtime_info)
 
-		bind_to_section("text", text)
-		bind_to_section("checkbox", checkbox)
-		bind_to_section("button", button)
-		bind_to_section("radiobutton", radiobutton)
-		bind_to_section("textinput", textinput)
-		bind_to_section("group", group)
-		bind_to_section("indent", indent)
+		construct_header("widgets", function()
+			bind_to_section("text", text)
+			bind_to_section("checkbox", checkbox)
+			bind_to_section("button", button)
+			bind_to_section("radiobutton", radiobutton)
+			bind_to_section("textinput", textinput)
+			bind_to_section("group", group)
+			bind_to_section("indent", indent)
+		end)
 	end)
 	
 	run_if(state.show_recursive_window, recursive_window)
