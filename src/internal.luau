@@ -317,7 +317,7 @@ function internal.define_object(id: id, class_name: string, properties: props)
 	end
 
 	if internal._config then
-		internal._config(instance, internal._vdom[id])
+		internal._config(instance, properties)
 	end
 	
 	instance_to_id[instance] = id

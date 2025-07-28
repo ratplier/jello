@@ -70,8 +70,17 @@ function paint.window(collapsed: value<boolean>?)
     end)
 end
 
+function paint.no_background()
+    return {
+        BackgroundTransparency = 1,
+    }
+end
+
 function paint.image()
-    return ui.apply_color("Image", colors.Image)
+    return {
+        ScaleType = Enum.ScaleType.Fit,
+        ui.apply_color("Image", colors.Image)
+    }
 end
 
 function paint.seperator()

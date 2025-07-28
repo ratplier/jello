@@ -205,7 +205,7 @@ local function run_if(condition: jello.source<boolean>, fn: () -> ())
 end
 
 local function bind_to_header(text: string, fn: () -> ())
-	fn()
+	jello.section({ text = text }).with(fn)
 end
 
 return function()
