@@ -32,7 +32,7 @@ return ui.widget("textinput", function(arguments: partial<arguments>?)
     }) :: arguments
 
     local last_text_change = root.source(-1)
-	local state = {
+	local state: state = {
 		focused = root.source(false),
         hovered = root.source(false),
 		text = root.source(args.text),
