@@ -240,7 +240,7 @@ local function contents(state: state, args: arguments)
 		CanvasSize = UDim2.fromOffset(0, 0),
 		ScrollBarThickness = 0,
 		
-		ui.padding(config.spacing),
+		ui.padding(10),
 		ui.list_layout("Vertical", config.spacing)
 	}
 end
