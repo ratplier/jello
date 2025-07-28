@@ -1,9 +1,9 @@
 --!strict
+local config = require("../config")
 local root = require("../utils/rootkit")
 local ui = require("../utils/uikit")
 local paint = require("../utils/paint")
 
-local row = require("./format/row")
 local text = require("./text")
 
 type source<T> = root.source<T>
@@ -34,38 +34,41 @@ return ui.widget("radiobutton", function(arguments: partial<arguments>?)
 		end),
 	}
 
-    row().with(function()
-        local button = root.create("Frame") {
-            Active = true,
-            Size = UDim2.fromOffset(18, 18),
+    local button = root.create("Frame") {
+        Active = true,
+        Size = UDim2.fromOffset(18, 18),
 
-            root.create("Frame") {
-                Size = UDim2.fromScale(1, 1),
-                Visible = state.selected(),
+        root.create("Frame") {
+            Size = UDim2.fromScale(1, 1),
+            Visible = state.selected(),
 
-                ui.circle(),
-                paint.radialcenter(),
-            },
-            
             ui.circle(),
-            ui.padding(3),
-            paint.background(state.clicked, state.hovered),
-            
-            ui.entered(function() state.hovered(true) end),
-            ui.exited(function() state.hovered(false) end),
-            
-            ui.clicked("Button1", function()
-                last_click( root.get_tick() )
-                args.state( args.index )
-            end),
-        }
-
-        if args.text then
-            text { text = args.text }
-        end
+            paint.radialcenter(),
+        },
         
-        root.mount(button)
-    end)
+        ui.circle(),
+        ui.padding(3),
+        paint.background(state.clicked, state.hovered),
+    }
 
+    local main = root.create("Frame") {
+		AutomaticSize = Enum.AutomaticSize.XY,
+		BackgroundTransparency = 1,
+
+        button,
+        ui.list_layout("Horizontal", config.padding),
+
+        ui.hovered(state.hovered),
+        ui.clicked("Button1", function()
+            last_click( root.get_tick() )
+            args.state( args.index )
+        end),
+    }
+
+    root.open_scope(main)
+    root.conditional(args.text ~= nil, text, { text = args.text })
+    root.close_scope()
+
+    root.mount(main)
     return state
 end)
