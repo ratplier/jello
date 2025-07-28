@@ -1,4 +1,5 @@
 --!strict
+local config = require("../../config")
 local root = require("../../utils/rootkit")
 local ui = require("../../utils/uikit")
 
@@ -11,7 +12,7 @@ export type arguments = {
 }
 
 return ui.widget("row", function(arguments: root.partial<arguments>?)
-	local args = root.default(arguments, { height = 16, padding = 8 }) :: arguments
+	local args = root.default(arguments, { height = 16, padding = config.spacing }) :: arguments
 
 	local object = root.create("Frame") {
 		AutomaticSize = Enum.AutomaticSize.XY,

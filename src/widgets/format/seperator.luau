@@ -1,9 +1,7 @@
 --!strict
-local config = require("../../config")
 local root = require("../../utils/rootkit")
 local ui = require("../../utils/uikit")
-
-local colors = config.colors
+local paint = require("../../utils/paint")
 
 type partial<T> = root.partial<T>
 type source<T> = root.source<T>
@@ -29,7 +27,7 @@ return ui.widget("seperator", function(arguments: partial<arguments>?)
 				Size = UDim2.new(0, 10, 0, thickness),
 				LayoutOrder = 1,
 				
-				ui.apply_color("Background", colors.Seperator),
+				paint.seperator(),
 			},
 			
 			-- text
@@ -38,10 +36,8 @@ return ui.widget("seperator", function(arguments: partial<arguments>?)
 				LayoutOrder = 2,
 				
 				Text = root.default(args.text, ""),
-				TextSize = config.textSize,
-				Font = config.font,
 
-				ui.apply_color("Text", colors.Text),
+				paint.text(),
 				root.conditional(has_text, function()
 					return ui.padding(0, 3, 5, 5)
 				end),
@@ -52,8 +48,8 @@ return ui.widget("seperator", function(arguments: partial<arguments>?)
 				LayoutOrder = 3,
 				Size = UDim2.new(0, 0, 0, thickness),
 				
+				paint.seperator(),
 				ui.flexitem("Grow"),
-				ui.apply_color("Background", colors.Seperator),
 			}
 		}
 	end)

@@ -1,4 +1,5 @@
 --!strict
+local config = require("../../config")
 local root = require("../../utils/rootkit")
 local ui = require("../../utils/uikit")
 
@@ -19,7 +20,7 @@ return ui.widget("indent", function(arguments: root.partial<arguments>?)
         Size = UDim2.new(0, 0, 0, 0),
 
         ui.padding(0, 0, args.indent, 0),
-        ui.list_layout("Vertical", args.padding),
+        ui.list_layout("Vertical", config.spacing),
     }
 
     root.mount(indent)

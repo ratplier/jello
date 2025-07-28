@@ -2,8 +2,7 @@
 local config = require("../config")
 local root = require("../utils/rootkit")
 local ui = require("../utils/uikit")
-
-local colors = config.colors
+local paint = require("../utils/paint")
 
 type source<T> = root.source<T>
 type partial<T> = root.partial<T>
@@ -50,10 +49,7 @@ return ui.widget("textinput", function(arguments: partial<arguments>?)
 			TextXAlignment = Enum.TextXAlignment.Left,
             TextYAlignment = Enum.TextYAlignment.Top,
 
-			Font = config.font,
             Text = args.text,
-            TextSize = config.textSize,
-
 			PlaceholderText = args.placeholder,
             TextEditable = not args.readOnly,
             MultiLine = args.multiLine,
@@ -68,10 +64,11 @@ return ui.widget("textinput", function(arguments: partial<arguments>?)
                 last_text_change( root.get_tick() )
             end,
 
-            ui.padding(5),
+            ui.padding(config.padding),
             ui.hovered(state.hovered),
-			ui.apply_color("Text", colors.Text),
-            ui.apply_color("Background", colors.FrameBg),
+
+            paint.text(),
+            paint.background(),
 		}
 	end)
 

@@ -1,4 +1,5 @@
 --!strict
+local config = require("../../config")
 local root = require("../../utils/rootkit")
 local ui = require("../../utils/uikit")
 
@@ -11,7 +12,7 @@ export type arguments = {
 }
 
 return ui.widget("group", function(arguments: root.partial<arguments>?)
-	local args = root.default(arguments, { align = "Left", padding = 8 }) :: arguments
+	local args = root.default(arguments, { align = "Left", padding = config.spacing }) :: arguments
 
 	local alignment = Enum.HorizontalAlignment:FromName(args.align) :: Enum.HorizontalAlignment
 	local list = ui.list_layout("Vertical", args.padding) :: UIListLayout

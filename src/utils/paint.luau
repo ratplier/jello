@@ -12,6 +12,7 @@ local read = root.read
 local paint = {}
 
 function paint.text(active: value<boolean>?)
+    active = active or true
     return {
         Font = config.font,
         TextSize = config.textSize,
@@ -26,17 +27,18 @@ end
 function paint.background(active: value<boolean>?, hovered: value<boolean>?)
     return ui.apply_color("Background", function()
         return
-            if read(active) == true then colors.FrameBgActive
-            elseif read(hovered) == true then colors.FrameBgHovered
+            if read(hovered) == true then colors.FrameBgHovered
+            elseif read(active) == true then colors.FrameBgActive
             else colors.FrameBg
     end)
 end
 
 function paint.title(active: value<boolean>?, collapsed: value<boolean>?)
+    active = active or true
     return ui.apply_color("Background", function()
         return
-            if read(collapsed) == true then colors.TitleBgCollapsed
-            elseif read(active) == true then colors.TitleBg
+            if read(active) == true then colors.TitleBg
+            elseif read(collapsed) == true then colors.TitleBgCollapsed
             else colors.TitleBgDisabled
     end)
 end
@@ -78,6 +80,10 @@ end
 
 function paint.resize_grip()
     return ui.apply_color("Image", colors.ResizeGrip)
+end
+
+function paint.radialcenter()
+    return ui.apply_color("Background", colors.RadialCenter)
 end
 
 return paint

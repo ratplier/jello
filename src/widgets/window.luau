@@ -137,8 +137,8 @@ local function topbar(state: state, args: arguments)
 			state.position(target_position)
 		end),
 
-		ui.padding(5, 10),
-		ui.list_layout("Horizontal", 10),
+		ui.padding(config.spacing / 2, config.spacing),
+		ui.list_layout("Horizontal", config.spacing),
 		paint.title(state.active, state.collasped),
 		
 		root.conditional(not args.noMinimize, function()
@@ -240,8 +240,8 @@ local function contents(state: state, args: arguments)
 		CanvasSize = UDim2.fromOffset(0, 0),
 		ScrollBarThickness = 0,
 		
-		ui.padding(10),
-		ui.list_layout("Vertical", 5)
+		ui.padding(config.spacing),
+		ui.list_layout("Vertical", config.spacing)
 	}
 end
 

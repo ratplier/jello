@@ -2,8 +2,7 @@
 local config = require("../config")
 local root = require("../utils/rootkit")
 local ui = require("../utils/uikit")
-
-local colors = config.colors
+local paint = require("../utils/paint")
 
 type source<T> = root.source<T>
 type partial<T> = root.partial<T>
@@ -16,12 +15,12 @@ export type state = {
 	hovered: source<boolean>,
 }
 export type arguments = {
-	text: string?,
-	padding: number?,
+	text: string,
+	padding: number,
 }
 
 return ui.widget("button", function(arguments: partial<arguments>?)
-	local args = root.default(arguments, {}) :: arguments
+	local args = root.default(arguments, { text = "Button", padding = config.padding }) :: arguments
 	local last_clicked = root.source(-1)
 	local last_right_clicked = root.source(-1)
 	local last_middle_clicked = root.source(-1)
@@ -42,18 +41,11 @@ return ui.widget("button", function(arguments: partial<arguments>?)
 			Active = true,
 			AutomaticSize = Enum.AutomaticSize.XY,
 			
-			Text = args.text or "Button",
-			TextSize = config.textSize,
-			Font = config.font,
+			Text = args.text,
+			ui.padding(args.padding),
 
-			ui.padding(args.padding or 3),
-			ui.apply_color("Text", colors.Text),
-			ui.apply_color("Background", function()
-				return
-					if clicked() then colors.ButtonActive
-					elseif state.hovered() then colors.ButtonHovered
-					else colors.Button
-			end),
+			paint.text(),
+			paint.button(clicked, state.hovered),
 			
 			ui.entered(function() state.hovered(true) end),
 			ui.exited(function() state.hovered(false) end),

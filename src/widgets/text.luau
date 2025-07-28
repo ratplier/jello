@@ -1,9 +1,7 @@
 --!strict
-local config = require("../config")
 local root = require("../utils/rootkit")
 local ui = require("../utils/uikit")
-
-local colors = config.colors
+local paint = require("../utils/paint")
 
 type source<T> = root.source<T>
 type partial<T> = root.partial<T>
@@ -33,10 +31,7 @@ return ui.widget("text", function(arguments: partial<arguments>?)
 			TextXAlignment = Enum.TextXAlignment.Left,
 			Interactable = false,
 
-			TextSize = config.textSize,
-			Font = config.font,
-			
-			ui.apply_color("Text", colors.Text),
+			paint.text(),
 			ui.hovered(state.hovered),
 			
 			Text = root.default(args.text, "text"),

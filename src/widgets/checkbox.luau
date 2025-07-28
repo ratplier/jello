@@ -2,12 +2,12 @@
 local config = require("../config")
 local root = require("../utils/rootkit")
 local ui = require("../utils/uikit")
+local paint = require("../utils/paint")
 
 local row = require("./format/row")
 local text = require("./text")
 
 local assets = config.assets
-local colors = config.colors
 
 type source<T> = root.source<T>
 type partial<T> = root.partial<T>
@@ -46,15 +46,12 @@ return ui.widget("checkbox", function(arguments: partial<arguments>?)
 				ImageTransparency = function()
 					return if state.checked() then 0 else 1
 				end,
+
+				paint.image(),
 			},
 
-			ui.padding(2),
-			ui.apply_color("Background", function()
-				return
-					if state.clicked() then colors.ButtonActive
-					elseif state.hovered() then colors.ButtonHovered
-					else colors.Button
-			end),
+			ui.padding(config.padding / 2),
+			paint.button(state.clicked, state.hovered),
 			
 			ui.entered(function() state.hovered(true) end),
 			ui.exited(function() state.hovered(false) end),

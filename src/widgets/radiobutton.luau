@@ -1,12 +1,10 @@
 --!strict
-local config = require("../config")
 local root = require("../utils/rootkit")
 local ui = require("../utils/uikit")
+local paint = require("../utils/paint")
 
 local row = require("./format/row")
 local text = require("./text")
-
-local colors = config.colors
 
 type source<T> = root.source<T>
 type partial<T> = root.partial<T>
@@ -46,19 +44,12 @@ return ui.widget("radiobutton", function(arguments: partial<arguments>?)
                 Visible = state.selected(),
 
                 ui.circle(),
-                ui.apply_color("Background", function()
-                    return colors.RadialCenter
-                end),
+                paint.radialcenter(),
             },
             
             ui.circle(),
             ui.padding(3),
-            ui.apply_color("Background", function()
-                return
-                    if state.clicked() then colors.FrameBgActive
-                    elseif state.hovered() then colors.FrameBgHovered
-                    else colors.FrameBg
-            end),
+            paint.background(state.clicked, state.hovered),
             
             ui.entered(function() state.hovered(true) end),
             ui.exited(function() state.hovered(false) end),

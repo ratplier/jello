@@ -19,9 +19,9 @@ return {
 		ButtonHovered = color4.create(66, 150, 250, 0.6),
 		ButtonActive = color4.create(15, 135, 250, 1),
 		
-		FrameBg = color4.create(41, 74, 122, 0.64),
-		FrameBgHovered = color4.create(41, 74, 122, 0.64),
-		FrameBgActive = color4.create(41, 74, 122, 0.33),
+		FrameBg = color4.create(41, 74, 122, 0.54),
+		FrameBgHovered = color4.create(66, 150, 250, 0.54),
+		FrameBgActive = color4.create(15, 135, 250, 0.67),
 
 		Header = color4.create(66, 150, 250, 0.31),
 		NoHeader = color4.create(0, 0, 0, 0),
@@ -46,5 +46,7 @@ return {
 	minWindowSize = vector.create(200, 100),
 	cornerRadius = 5,
 	textSize = 14,
+
+	spacing = 8,
 	padding = 4,
 }
