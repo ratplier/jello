@@ -15,6 +15,7 @@ type partial<T> = root.partial<T>
 export type state = {
 	hovered: source<boolean>,
 	checked: source<boolean>,
+	clicked: source<boolean>,
 }
 export type arguments = {
 	label: string?
@@ -24,7 +25,7 @@ return ui.widget("checkbox", function(arguments: partial<arguments>?)
 	local args = root.default(arguments, {}) :: arguments
 	local last_click = root.source( root.get_tick() )
 	
-	local state = {
+	local state: state = {
 		hovered = root.source(false),
 		checked = root.source(false),
 		clicked = root.derive(function()
