@@ -67,7 +67,8 @@ end
 
 function kit.derive<T>(fn: () -> T): source<T>
 	local src = internal.source()
-	src(fn())
+	local value = internal.read(fn) :: T & any
+	if value ~= src() then src(value) end
 	return src
 end
 
@@ -88,12 +89,21 @@ function kit.default<T>(value: any?, default: T): T
 	return result
 end
 
-function kit.once(fn: () -> ())
+function kit.once<A...>(fn: (A...) -> (), ...: A...)
 	local started = internal.source(false)
 	if started() == false then
-		fn()
+		fn(...)
 		started(true)
 	end
+end
+
+function kit.changed<T>(property: string, fn: (self: Instance, T) -> ())
+	return {
+		Changed = function(self: Instance, prop: string)
+			if prop ~= property then return end
+			fn( self, internal.read(property) )
+		end,
+	}
 end
 
 function kit.open_scope(target: Instance)

@@ -130,12 +130,22 @@ function kit.flexitem(name: flexMode)
 	}
 end
 
+function kit.constrain(min_x: number?, min_y: number?, max_x: number?, max_y: number?)
+	return internal.create("UISizeConstraint") {
+		PaddingTop = UDim.new(0, min_y or 0),
+		PaddingBottom = UDim.new(0, max_y or 0),
+		PaddingLeft = UDim.new(0, min_x or 0),
+		PaddingRight = UDim.new(0, max_x or 0),
+	}
+end
+
 function kit.hovered(fn: (boolean) -> ())
 	return {
 		kit.entered(function() fn(true) end),
 		kit.exited(function() fn(false) end),
 	}
 end
+
 
 kit.padding = function(...)
 	local t,b,l,r

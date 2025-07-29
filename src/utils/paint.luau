@@ -16,6 +16,8 @@ function paint.text(active: value<boolean>?)
     return {
         Font = config.font,
         TextSize = config.textSize,
+        TextTruncate = Enum.TextTruncate.AtEnd,
+        
         ui.apply_color("Text", function()
             return
                 if read(active) == true then colors.Text
