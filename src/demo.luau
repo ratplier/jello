@@ -204,11 +204,11 @@ local function run_if(condition: jello.source<boolean>, fn: () -> ())
 	if condition() then fn() end
 end
 
-local function bind_to_section(text: string, fn: () -> ())
+local function bind_to_section(text: string, fn)
 	jello.section({ text = text }).with(fn)
 end
 
-local function construct_header(name: string, fn: () -> ())
+local function construct_header(name: string, fn)
 	jello.header({ text = name }).with(fn)
 end
 

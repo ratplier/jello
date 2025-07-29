@@ -14,7 +14,7 @@ export type fillDirection = "Vertical" | "Horizontal"
 export type mouseButton = "Button1" | "Button2" | "Button3"
 export type flexMode = "Fill" | "Grow" | "Shrink"
 export type widgetConstructor<T, A...> = (A...) -> T
-export type scope = (() -> ())?
+export type scope<T> = (scope: T) -> ()
 
 local kit = {
 	drag_target = nil,
@@ -183,9 +183,11 @@ function kit.widget<C, T, A...>(name: string, constructor: widgetConstructor<T, 
 	end :: any
 end
 
-function kit.start_scope<T>(target: Instance, state: (T & any)?): T & { with: (scope: () -> ()) -> () }
+function kit.start_scope<T>(target: Instance, state: (T & any)?): T & { with: (scope: scope<T>) -> () }
 	state = if type(state) == "table" then state else {} :: T
-	(state::any).with = internal.scope
+	(state::any).with = function(fn)
+		return internal.scope(function() fn(state) end)
+	end
 	internal.push_parent(target)
 	return state
 end
