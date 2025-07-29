@@ -53,25 +53,6 @@ function kit.is_mouse_over(object: GuiObject)
 	end
 end
 
-function kit.entered(callback: (self: GuiObject) -> ())
-	return {
-		InputBegan = function(self, input: InputObject)
-			if input.UserInputType ~= Enum.UserInputType.MouseMovement then return end
-			if not kit.is_mouse_over(self) then return end
-			callback(self)
-		end,
-	}
-end
-
-function kit.exited(callback: (self: GuiObject) -> ())
-	return {
-		InputEnded = function(self, input: InputObject)
-			if input.UserInputType ~= Enum.UserInputType.MouseMovement then return end
-			callback(self)
-		end,
-	}
-end
-
 function kit.clicked(mouse_button: value<mouseButton>, callback: (self: GuiObject, x: number, y: number) -> ())
 	mouse_button = internal.read(mouse_button) :: mouseButton
 	

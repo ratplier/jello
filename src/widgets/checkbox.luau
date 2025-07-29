@@ -50,12 +50,10 @@ return ui.widget("checkbox", function(arguments: partial<arguments>?)
 				paint.image(),
 			},
 
-			ui.padding(config.padding / 2),
 			paint.button(state.clicked, state.hovered),
-			
-			ui.entered(function() state.hovered(true) end),
-			ui.exited(function() state.hovered(false) end),
-			
+
+			ui.padding(config.padding / 2),
+			ui.hovered(state.hovered),
 			ui.clicked("Button1", function()
 				state.checked( not state.checked() )
 				last_click( root.get_tick() )

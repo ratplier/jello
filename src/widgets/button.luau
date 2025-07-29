@@ -47,9 +47,7 @@ return ui.widget("button", function(arguments: partial<arguments>?)
 			paint.text(),
 			paint.button(clicked, state.hovered),
 			
-			ui.entered(function() state.hovered(true) end),
-			ui.exited(function() state.hovered(false) end),
-			
+			ui.hovered(state.hovered),
 			ui.clicked("Button1", function()
 				last_clicked( root.get_tick() )
 			end),
