@@ -17,6 +17,11 @@ return {
 		TitleBg = color4.create(41, 74, 122, 1),
 		TitleBgDisabled = color4.create(10, 10, 10, 1),
 		TitleBgCollapsed = color4.create(0, 0, 0, 0.6),
+
+        Menubar = color4.create(36, 36, 36, 1),
+		MenuButton = color4.create(36, 36, 36, 1),
+		MenuButtonHovered = color4.create(66, 150, 250, 0.4),
+		MenuButtonActive = color4.create(15, 135, 250, 1),
 		
 		Button = color4.create(66, 150, 250, 0.4),
 		ButtonHovered = color4.create(66, 150, 250, 0.6),

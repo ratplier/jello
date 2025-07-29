@@ -187,22 +187,27 @@ local function update_connections(instance: Instance, new_listeners: listeners)
 end
 
 local internal = {
-	_tick = 0,
-	_env = 'root',
-	_debug = true,
+	_env = "root",
+	_debug = false,
 	_paused = false,
+
+	_tick = 0,
+
 	_instances = instances,
-	_parent_stack_length = 0,
-	_target = nil :: Instance?,
-	_pushed_ids = {} :: { id },
-	_vdom = {} :: { [id]: object },
 	_instance_to_id = instance_to_id,
 	_used_ids = {} :: { [id]: number },
-	_parent_stack = {} :: { Instance },
+	_pushed_ids = {} :: { id },
+	_vdom = {} :: { [id]: object },
 	_last_vdom = {} :: { [id]: object },
 	_instance_metadata = instance_metadata,
+
+	_parent_stack = {} :: { Instance },
+	_parent_stack_length = 0,
+	_target = nil :: Instance?,
+
 	_listeners = {} :: { [() -> ()]: true },
 	_config = nil :: ((Instance, props) -> ())?,
+	_profile_count = 0,
 
 	assert = assert,
 	throw = throw,
@@ -214,10 +219,15 @@ local internal = {
 function internal.profile(name: string)
 	if internal._debug == false then return end
 	debug.profilebegin(`jello::{name}`)
+
+	internal._profile_count += 1
 end
 
 function internal.endprofile()
 	if internal._debug == false then return end
+	if internal._profile_count < 1 then return end
+
+	internal._profile_count -= 1
 	debug.profileend()
 end
 
@@ -408,9 +418,11 @@ function internal.push_parent(parent: Instance)
 	table.insert(internal._parent_stack, parent)
 end
 
-function internal.pop_parent()
+function internal.pop_parent(depth: number?)
 	internal._parent_stack_length -= 1
-	table.remove(internal._parent_stack)
+
+	local index = #internal._parent_stack - (depth or 0)
+	table.remove(internal._parent_stack, index)
 end
 
 function internal.update_target(target: Instance)

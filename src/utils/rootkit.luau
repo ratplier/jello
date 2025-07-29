@@ -110,8 +110,8 @@ function kit.open_scope(target: Instance)
 	internal.push_parent(target)
 end
 
-function kit.close_scope()
-	internal.pop_parent()
+function kit.close_scope(depth: number?)
+	internal.pop_parent(depth)
 end
 
 function kit.conditional<T, R, A...>(callback: source<T> | T, fn: (A...) -> R, ...: A...): R

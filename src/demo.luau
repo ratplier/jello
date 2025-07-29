@@ -227,8 +227,14 @@ return function()
 		show_recursive_window = jello.source(false),
 		show_runtime_info = jello.source(false),
 	}
-	
-	jello.window({ title = "jello demo" }).with(function()
+
+	jello.window({ title = "jello demo" }).with(function(window)
+		window.menubar()
+			jello.menu { text = "file" }
+			jello.menu { text = "edit" }
+			jello.menu { text = "view" }
+		jello.close()
+
 		jello.row().with(function()
 			jello.text { text = `jello (v{jello.version})` }
 			hint("hover over these components to see useful info")

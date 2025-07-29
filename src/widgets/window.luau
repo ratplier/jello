@@ -5,6 +5,7 @@ local config = require("../config")
 local root = require("../utils/rootkit")
 local ui = require("../utils/uikit")
 local paint = require("../utils/paint")
+local extern_menubar = require("./menu/menubar")
 
 local START_POSITION = vector.create(200, 200)
 local OFFSET_INCREMENT = vector.create(30, 30)
@@ -22,6 +23,8 @@ type state = {
 	position: source<vector>,
 	size: source<vector>,
 	zindex: source<number>,
+
+	menubar: () -> ui.scoped_state,
 }
 export type arguments = {
 	title: string,
@@ -227,13 +230,12 @@ local function resize_grip(state: state, args: arguments)
 	}
 end
 
-local function contents(state: state, args: arguments)
+local function user_contents(state: state, args: arguments)
 	return root.create("ScrollingFrame") {
-		Position = UDim2.fromOffset(0, 28),
-		Size = UDim2.new(1, 0, 1, -28),
+		Size = UDim2.new(1, 0, 1, 0),
 		BackgroundTransparency = 1,
-		ZIndex = 2,
 
+		LayoutOrder = 2,
 		Visible = not state.collasped(),
 		
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
@@ -245,9 +247,42 @@ local function contents(state: state, args: arguments)
 	}
 end
 
+local function menubar(state: state, args: arguments)
+	return root.create("Frame") {
+		AutomaticSize = Enum.AutomaticSize.Y,
+		Size = UDim2.new(1, 0, 0, 0),
+
+		BackgroundTransparency = 1,
+		LayoutOrder = 1,
+	}
+end
+
+local function contents(state: state, args: arguments)
+	local menubar = menubar(state, args)
+	local user_contents = user_contents(state, args)
+	local contents = root.create("Frame") {
+		Position = UDim2.new(0, 0, 0, 28),
+		Size = UDim2.new(1, 0, 1, -28),
+		BackgroundTransparency = 1,
+		
+		LayoutOrder = 1,
+		Visible = not state.collasped(),
+		ui.list_layout("Vertical", 0),
+
+		menubar,
+		user_contents,
+	}
+
+	return {
+		contents = contents,
+		menubar = menubar,
+		user_contents = user_contents,
+	}
+end
+
 return ui.widget("window", function(arguments: partial<arguments>?)
 	local args = root.default(arguments, { noClose = true }) :: arguments
-	local state: state = {
+	local state = {
 		closed = root.source(false),
 		collasped = root.source(false),
 		active = root.source(true),
@@ -255,11 +290,18 @@ return ui.widget("window", function(arguments: partial<arguments>?)
 		position = root.source(START_POSITION),
 		size = root.source(vector.create(400, 400)),
 		zindex = root.source(-1),
-	}
+	} :: state
 	
 	local contents = contents(state, args)
 	local topbar = root.conditional(not args.noTopbar, topbar, state, args)::any
-	
+	(state::any).menubar = function()
+		local menubar = contents.menubar
+		root.open_scope(menubar)
+		local extern = extern_menubar()
+		root.close_scope(1)
+		return extern
+	end
+
 	local main = root.create("Frame") {
 		ClipsDescendants = true,
 		ZIndex = state.zindex(),
@@ -278,7 +320,7 @@ return ui.widget("window", function(arguments: partial<arguments>?)
 			return UDim2.fromOffset(pos.x, pos.y)
 		end,
 
-		contents,
+		contents.contents,
 		topbar,
 		
 		root.conditional(not args.noResize, resize_grip, state, args),
@@ -305,5 +347,5 @@ return ui.widget("window", function(arguments: partial<arguments>?)
 	end
 	
 	root.mount(main)
-	return ui.start_scope(contents, state)
+	return ui.start_scope(contents.user_contents, state)
 end)

@@ -94,6 +94,19 @@ function paint.tooltip()
     }
 end
 
+function paint.menubar()
+    return ui.apply_color("Background", colors.Menubar)
+end
+
+function paint.menubutton(active: value<boolean>?, hovered: value<boolean>?)
+    return ui.apply_color("Background", function()
+        return
+            if read(active) == true then colors.MenuButtonActive
+            elseif read(hovered) == true then colors.MenuButtonHovered
+            else colors.MenuButton
+    end)
+end
+
 function paint.no_background()
     return {
         BackgroundTransparency = 1,

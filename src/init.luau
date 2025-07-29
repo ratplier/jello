@@ -27,6 +27,10 @@ local function error_handler(message: string)
 	internal._paused = true
 	warn(message)
 	print(debug.traceback())
+
+	for i=1, internal._profile_count do
+		internal.endprofile()
+	end
 end
 
 local jello = {
@@ -49,6 +53,9 @@ local jello = {
 	radiobutton = require(widgets.radiobutton),
 	textinput = require(widgets.textinput),
 	tooltip = require(widgets.tooltip),
+
+	menubar = require(widgets.menu.menubar),
+	menu = require(widgets.menu.menu),
 }
 
 function jello.create(class_name: string)
@@ -97,7 +104,7 @@ function jello.step()
 
 		listener_count+=1
 	end
-	
+
 	internal.endprofile()
 	
 	local parent_stack_length = internal._parent_stack_length
