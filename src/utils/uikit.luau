@@ -10,11 +10,14 @@ type source<T> = internal.source<T>
 type value<T> = source<T> | T
 type color4 = color4.color4
 
+export type scope<T> = (scope: T) -> ()
+export type state<T={}> = T
+export type scoped_state<T={}> = state<T> & { with: (scope: scope<T>) -> () }
+
 export type fillDirection = "Vertical" | "Horizontal"
 export type mouseButton = "Button1" | "Button2" | "Button3"
 export type flexMode = "Fill" | "Grow" | "Shrink"
-export type widgetConstructor<T, A...> = (A...) -> T
-export type scope<T> = (scope: T) -> ()
+export type widgetConstructor<T, A...> = (A...) -> state<T>
 
 local kit = {
 	drag_target = nil,
@@ -145,12 +148,11 @@ function kit.constrain(min_x: number?, min_y: number?, max_x: number?, max_y: nu
 end
 
 function kit.hovered(fn: (boolean) -> ())
-	return {
-		kit.entered(function() fn(true) end),
-		kit.exited(function() fn(false) end),
-	}
+	return function(self)
+		local hovered = kit.is_mouse_over(self)
+		fn(hovered)
+	end
 end
-
 
 kit.padding = function(...)
 	local t,b,l,r
@@ -188,7 +190,7 @@ function kit.widget<C, T, A...>(name: string, constructor: widgetConstructor<T, 
 	end :: any
 end
 
-function kit.start_scope<T>(target: Instance, state: (T & any)?): T & { with: (scope: scope<T>) -> () }
+function kit.start_scope<T>(target: Instance, state: (T & any)?): scoped_state<T>
 	state = if type(state) == "table" then state else {} :: T
 	(state::any).with = function(fn)
 		return internal.scope(function() fn(state) end)
