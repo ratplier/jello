@@ -24,7 +24,6 @@ return {
 		FrameBgActive = color4.create(15, 135, 250, 0.67),
 
 		Header = color4.create(66, 150, 250, 0.31),
-		NoHeader = color4.create(0, 0, 0, 0),
 		HeaderHovered = color4.create(66, 150, 250, 0.62),
 		HeaderActive = color4.create(15, 135, 250, 1),
 		
