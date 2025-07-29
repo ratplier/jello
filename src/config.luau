@@ -2,6 +2,9 @@ local color4 = require("./utils/color4")
 
 return {
 	colors = {
+		Border = color4.create(160, 160, 175, 0.7),
+		BorderDark = color4.create(110, 110, 125, 0.5),
+
 		Text = color4.create(255, 255, 255, 1),
 		TextDisabled = color4.create(128, 128, 128, 1),
 
@@ -27,9 +30,7 @@ return {
 		HeaderHovered = color4.create(66, 150, 250, 0.62),
 		HeaderActive = color4.create(15, 135, 250, 1),
 
-        TooltipBg = color4.create(20, 20, 20, 0.94),
-		TooltipBorder = color4.create(160, 160, 175, 0.62),
-		
+        Tooltip = color4.create(20, 20, 20, 0.94),
 		Seperator = color4.create(99, 99, 99, 0.62),
 		RadialCenter = color4.create(66, 150, 250, 1),
 
@@ -48,6 +49,7 @@ return {
 	minWindowSize = vector.create(200, 100),
 	cornerRadius = 5,
 	textSize = 14,
+	strokeThickness = 1.5,
 
 	spacing = 8,
 	padding = 4,

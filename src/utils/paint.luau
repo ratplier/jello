@@ -65,22 +65,31 @@ function paint.button(active: value<boolean>?, hovered: value<boolean>?)
 end
 
 function paint.window(collapsed: value<boolean>?)
-    return ui.apply_color("Background", function()
-        return
-            if read(collapsed) == true then colors.WindowBgCollapsed
-            else colors.WindowBg
-    end)
+    return {
+        ui.apply_color("Background", function()
+            return
+                if read(collapsed) == true then colors.WindowBgCollapsed
+                else colors.WindowBg
+        end),
+
+        root.create("UIStroke") {
+            Thickness = config.strokeThickness,
+
+            Color = color4.read_color3(colors.BorderDark),
+            Transparency = color4.read_alpha(colors.BorderDark),
+        },
+    }
 end
 
 function paint.tooltip()
     return {
-        ui.apply_color("Background", colors.TooltipBg),
+        ui.apply_color("Background", colors.Tooltip),
         root.create("UIStroke") {
             ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-            Thickness = 1,
+            Thickness = config.strokeThickness,
 
-            Color = color4.read_color3(colors.TooltipBorder),
-            Transparency = color4.read_alpha(colors.TooltipBorder),
+            Color = color4.read_color3(colors.Border),
+            Transparency = color4.read_alpha(colors.Border),
         },
     }
 end
