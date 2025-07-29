@@ -88,8 +88,13 @@ function jello.step()
 
 	internal.profile("mount-listeners")
 	
+	local listener_count = 0
 	for listener in internal._listeners do
+		internal.profile(`listener-{listener_count}`)
 		listener()
+		internal.endprofile()
+
+		listener_count+=1
 	end
 	
 	internal.endprofile()
@@ -169,7 +174,7 @@ function jello.init(args: init_args?)
 		end)
 	end
 	
-	jello.update_frequency = if frequency then frequency else 1/60
+	jello.update_frequency = if frequency then frequency else 1/30
 	jello._target = target
 	
 	return jello

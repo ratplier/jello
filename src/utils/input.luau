@@ -4,68 +4,122 @@ local paint = require("./paint")
 local ui = require("./uikit")
 local config = require("../config")
 
-export type datatype = "number" | "Vector2" | "Vector3" | "vector" | "UDim" | "UDim2" | "Color3" | "Color4" | "Rect"
-
-local datatypes = {"number", "Vector2", "Vector3", "vector", "UDim", "UDim2", "Color3", "Color4", "Rect"}
-local num_components = {
-    number = 1,
-    Vector2 = 2,
-    Vector3 = 3,
-    vector = 3,
-    UDim = 2,
-    UDim2 = 4,
-    Color3 = 3,
-    Color4 = 4,
-    Rect = 4,
+export type DataType = "number" | "Vector2" | "Vector3" | "vector" | "UDim" | "UDim2" | "Color3" | "buffer" | "Rect"
+export type InputOptions = {
+    align: ("Left" | "Center" | "Right")?,
+    decimal_places: number?,
+    min: number?,
+    max: number?,
+    step: number?,
 }
 
-local read_handlers = {
-    number = function(v, i) return v end,
-    Vector2 = function(v, i) return i == 0 and v.X or v.Y end,
-    Vector3 = function(v, i) return i == 0 and v.X or i == 1 and v.Y or v.Z end,
-    vector = function(v, i) return i == 0 and v.x or i == 1 and v.y or v.z end,
-    UDim = function(v, i) return i == 0 and v.Scale or v.Offset end,
-    UDim2 = function(v, i) return i == 0 and v.X.Scale or i == 1 and v.X.Offset or i == 2 and v.Y.Scale or v.Y.Offset end,
-    Rect = function(v, i) return i == 0 and v.Min.X or i == 1 and v.Min.Y or i == 2 and v.Max.X or v.Max.Y end,
-    table = function(v, i) return v[i] end,
+local DATA_TYPES = {"number", "Vector2", "Vector3", "vector", "UDim", "UDim2", "Color3", "buffer", "Rect"}
+local DATA_TYPE_SIZES = { number = 1, Vector2 = 2, Vector3 = 3, vector = 3, UDim = 2, UDim2 = 4, Color3 = 3, buffer = 4, Rect = 4 }
 
-    Color3 = function(v: Color3, i) local r,g,b=v.R,v.G,v.B; return i == 0 and r * 255 or i == 1 and g * 255 or b * 255 end,
-    Color4 = function(v, i) return buffer.readu8(v :: buffer, i) end,
-} :: {[datatype]: (any, number) -> any}
+local read_handlers: {[DataType]: (any, number) -> any} = {
+    number = function(value: number, index: number): number
+        return value
+    end,
+    Vector2 = function(vec: Vector2, index: number): number
+        if index == 1 then return vec.X end
+        if index == 2 then return vec.Y end
+        error('Index out of range')
+    end,
+    Vector3 = function(vec: Vector3, index: number): number
+        if index == 1 then return vec.X end
+        if index == 2 then return vec.Y end
+        if index == 3 then return vec.Z end
+        error('Index out of range')
+    end,
+    vector = function(vec: {x: number, y: number, z: number}, index: number): number
+        if index == 1 then return vec.x end
+        if index == 2 then return vec.y end
+        if index == 3 then return vec.z end
+        error('Index out of range')
+    end,
+    UDim = function(udim: UDim, index: number): number
+        if index == 1 then return udim.Scale end
+        if index == 2 then return udim.Offset end
+        error('Index out of range')
+    end,
+    UDim2 = function(udim2: UDim2, index: number): number
+        if index == 1 then return udim2.X.Scale end
+        if index == 2 then return udim2.X.Offset end
+        if index == 3 then return udim2.Y.Scale end
+        if index == 4 then return udim2.Y.Offset end
+        error('Index out of range')
+    end,
+    Rect = function(rect: Rect, index: number): number
+        if index == 1 then return rect.Min.X end
+        if index == 2 then return rect.Min.Y end
+        if index == 3 then return rect.Max.X end
+        if index == 4 then return rect.Max.Y end
+        error('Index out of range')
+    end,
+    Color3 = function(color: Color3, index: number): number
+        if index == 1 then return color.R * 255 end
+        if index == 2 then return color.G * 255 end
+        if index == 3 then return color.B * 255 end
+        error('Index out of range')
+    end,
+    buffer = function(color_buffer: buffer, index: number): number
+        return buffer.readu8(color_buffer, index - 1)
+    end,
+}
 
-local write_handlers = {
-    number = function(v, i, value) return value end,
-    Vector2 = function(v, i, value) return (i == 0 and Vector2.new(value, v.Y) or i == 1 and Vector2.new(v.X, value) or error("Invalid index for Vector2 type")) end,
-    Vector3 = function(v, i, value) return (i == 0 and Vector3.new(value, v.Y, v.Z) or i == 1 and Vector3.new(v.X, value, v.Z) or i == 2 and Vector3.new(v.X, v.Y, value) or error("Invalid index for Vector3 type")) end,
-    vector = function(v, i, value) return (i == 0 and {x = value, y = v.y, z = v.z} or i == 1 and {x = v.x, y = value, z = v.z} or i == 2 and {x = v.x, y = v.y, z = value} or error("Invalid index for vector type")) end,
-    UDim = function(v, i, value) return (i == 0 and UDim.new(value, v.Offset) or i == 1 and UDim.new(v.Scale, value) or error("Invalid index for UDim type")) end,
-    UDim2 = function(v, i, value) return (i == 0 and UDim2.new(value, v.X.Offset, v.Y.Scale, v.Y.Offset) or i == 1 and UDim2.new(v.X.Scale, value, v.Y.Scale, v.Y.Offset) or i == 2 and UDim2.new(v.X.Scale, v.X.Offset, value, v.Y.Offset) or i == 3 and UDim2.new(v.X.Scale, v.X.Offset, v.Y.Scale, value) or error("Invalid index for UDim2 type")) end,
-    Rect = function(v, i, value) return (i == 0 and Rect.new(value, v.Min.Y, v.Max.X, v.Max.Y) or i == 1 and Rect.new(v.Min.X, value, v.Max.X, v.Max.Y) or i == 2 and Rect.new(v.Min.X, v.Min.Y, value, v.Max.Y) or i == 3 and Rect.new(v.Min.X, v.Min.Y, v.Max.X, value) or error("Invalid index for Rect type")) end,
-    table = function(v, i, value) v[i] = value; return v end,
+local write_handlers: {[DataType]: (any, number, any) -> any} = {
+    number = function(target: number, index: number, value: number): number
+        return value
+    end,
+    Vector2 = function(target: Vector2, index: number, value: number): Vector2
+        if index == 1 then return Vector2.new(value, target.Y) end
+        if index == 2 then return Vector2.new(target.X, value) end
+        error('Index out of range')
+    end,
+    Vector3 = function(target: Vector3, index: number, value: number): Vector3
+        if index == 1 then return Vector3.new(value, target.Y, target.Z) end
+        if index == 2 then return Vector3.new(target.X, value, target.Z) end
+        if index == 3 then return Vector3.new(target.X, target.Y, value) end
+        error('Index out of range')
+    end,
+    vector = function(target: {x: number, y: number, z: number}, index: number, value: number): {x: number, y: number, z: number}
+        if index == 1 then return {x = value, y = target.y, z = target.z} end
+        if index == 2 then return {x = target.x, y = value, z = target.z} end
+        if index == 3 then return {x = target.x, y = target.y, z = value} end
+        error('Index out of range')
+    end,
+    UDim = function(target: UDim, index: number, value: number): UDim
+        if index == 1 then return UDim.new(value, target.Offset) end
+        if index == 2 then return UDim.new(target.Scale, value) end
+        error('Index out of range')
+    end,
+    UDim2 = function(target: UDim2, index: number, value: number): UDim2
+        if index == 1 then return UDim2.new(value, target.X.Offset, target.Y.Scale, target.Y.Offset) end
+        if index == 2 then return UDim2.new(target.X.Scale, value, target.Y.Scale, target.Y.Offset) end
+        if index == 3 then return UDim2.new(target.X.Scale, target.X.Offset, value, target.Y.Offset) end
+        if index == 4 then return UDim2.new(target.X.Scale, target.X.Offset, target.Y.Scale, value) end
+        error('Index out of range')
+    end,
+    Rect = function(target: Rect, index: number, value: number): Rect
+        if index == 1 then return Rect.new(value, target.Min.Y, target.Max.X, target.Max.Y) end
+        if index == 2 then return Rect.new(target.Min.X, value, target.Max.X, target.Max.Y) end
+        if index == 3 then return Rect.new(target.Min.X, target.Min.Y, value, target.Max.Y) end
+        if index == 4 then return Rect.new(target.Min.X, target.Min.Y, target.Max.X, value) end
+        error('Index out of range')
+    end,
+    Color3 = function(target: Color3, index: number, value: number): Color3
+        if index == 1 then return Color3.fromRGB(value, target.G * 255, target.B * 255) end
+        if index == 2 then return Color3.fromRGB(target.R * 255, value, target.B * 255) end
+        if index == 3 then return Color3.fromRGB(target.R * 255, target.G * 255, value) end
+        error('Index out of range')
+    end,
+    buffer = function(target: buffer, index: number, value: number): buffer
+        buffer.writeu8(target, index - 1, value)
+        return target
+    end,
+}
 
-    Color3 = function(v, i, value) return (i == 0 and Color3.fromRGB(value, v.G, v.B) or i == 1 and Color3.fromRGB(v.R, value, v.B) or i == 2 and Color3.fromRGB(v.R, v.G, value) or error("Invalid index for Color3 type")) end,
-    Color4 = function(v, i, value) return buffer.writeu8(v :: buffer, i, value) end,
-} :: {[datatype]: (any, number, any) -> any}
-
-local defaults = {
-    default_min = {
-        number = { 0 },
-        Vector2 = { 0, 0 },
-        Vector3 = { 0, 0, 0 },
-        vector = { 0, 0, 0 },
-        UDim = { 0, 0 },
-        UDim2 = { 0, 0, 0, 0 },
-        Rect = { 0, 0, 0, 0 },
-    },
-    default_max = {
-        number = { 100 },
-        Vector2 = { 100, 100 },
-        Vector3 = { 100, 100, 100 },
-        vector = { 100, 100, 100 },
-        UDim = { 1, 1000 },
-        UDim2 = { 1, 1000, 1, 1000 },
-        Rect = { 1000, 1000, 1000, 1000 },
-    },
+local DEFAULTS = {
     prefixes = {
         number = { "" },
         Vector2 = { "x: ", "y: " },
@@ -74,70 +128,69 @@ local defaults = {
         UDim = { "", "" },
         UDim2 = { "", "", "", "" },
         Color3 = { "r: ", "g: ", "b: " },
-        Color4 = { "r: ", "g: ", "b: ", "a: " },
-        Rect = { "mx: ", "my: ", "Mx: ", "My: " },
+        buffer = { "r: ", "g: ", "b: ", "a: " }, -- color4
+        Rect = { "minX: ", "minY: ", "maxX: ", "maxY: " },
     },
-    default_degrees = {
-        number = { 0 },
-        Vector2 = { 0, 0 },
-        Vector3 = { 0, 0, 0 },
-        vector = { 0, 0, 0 },
+    decimal_places = {
+        number = { nil },
+        Vector2 = { nil, nil },
+        Vector3 = { nil, nil, nil },
+        vector = { nil, nil, nil },
         UDim = { 3, 0 },
         UDim2 = { 3, 0, 3, 0 },
         Color3 = { 0, 0, 0 },
-        Color4 = { 0, 0, 0, 0 },
-        Rect = { 0, 0, 0, 0 },
-    }
+        buffer = { 0, 0, 0, 0 }, -- Color4
+        Rect = { nil, nil, nil, nil },
+    },
 }
 
-local function valid_datatype(value: any)
-    local type = typeof(value) :: datatype
-    return table.find(datatypes, type) ~= nil
+local function is_valid_data_type(value: any)
+    return table.find(DATA_TYPES, typeof(value)) ~= nil
 end
 
-local function read_index<T>(target: T, index: number): number?
-    root.assert(valid_datatype(target), "invalid datatype")
+local function read_component_value<T>(target: T, index: number): number?
+    root.assert(is_valid_data_type(target), "Invalid data type for reading component value.")
 
-    local type = typeof(target)
-    local handler = read_handlers[type :: datatype]
+    local data_type = typeof(target) :: DataType
+    local handler = read_handlers[data_type]
 
     if handler then
         local result = handler(target, index)
         if result ~= nil then return result end
     end
 
-    error(`unknown type, target or index {type}, {target}, {index}`)
+    error(`Unknown type, target, or index: {data_type}, {target}, {index}`)
 end
 
-local function write_index<T>(target: T, index: number, value: any)
-    root.assert(valid_datatype(target), "invalid datatype")
+local function write_component_value<T>(target: T, index: number, value: any): T
+    root.assert(is_valid_data_type(target), "Invalid data type for writing component value.")
 
-    local type = typeof(target) :: datatype
-    local handler = write_handlers[type]
+    local data_type = typeof(target) :: DataType
+    local handler = write_handlers[data_type]
     
     if handler then
-        handler(target, index, value)
+        return handler(target, index, value)
     else
-        error(`unknown type, target or index {type}, {target}, {index}`)
+        error(`Unknown type, target, or index: {data_type}, {target}, {index}`)
     end
 end
 
-local function size(value: any)
-    root.assert(valid_datatype(value), "invalid datatype")
+local function get_component_count(value: any)
+    root.assert(is_valid_data_type(value), "Invalid data type for getting component count.")
 
-    local type = typeof(value) :: datatype
-    return num_components[type]
+    local data_type = typeof(value) :: DataType
+    return DATA_TYPE_SIZES[data_type]
 end
 
-export type options = {
-    align: ("Left" | "Center" | "Right")?,
-    decimal_places: number?,
-    min: number?,
-    max: number?,
-    step: number?,
-}
+local function get_default(category: string, item: string?)
+    local result = DEFAULTS[category]
+    if item ~= nil then
+        result = (result :: any)[item]
+    end
+    return result
+end
 
-local function apply_modifiers(value: number, options: options)
+local function apply_modifiers(value: number, options: InputOptions)
     local min = options.min or -math.huge
     local max = options.max or math.huge
     local step = options.step
@@ -150,31 +203,34 @@ local function apply_modifiers(value: number, options: options)
     return number
 end
 
-local function create_input(total: number, value: number, prefix: string, options: options)
-    options = options or {} :: options
+local function create_component_input(
+    total_inputs: number, 
+    value_source: root.source<number>,
+    prefix: string, 
+    options: InputOptions,
+    on_change: (new_value: number) -> ()
+)
+    options = options or {} :: InputOptions
     local places = options.decimal_places
     local align = Enum.TextXAlignment:FromName(options.align or "Left")
 
-    local raw_n = root.source( apply_modifiers(value, options) )
-    local format_text = function()
-        local result = raw_n()
+    local function format_text(value: number)
+        local result = value
         if places ~= nil then
             result = string.format(`%.{places}f`::any, result)
         end
         return `{prefix}{result}`
     end
 
-    return root.create("TextBox") {
+    local object = root.create("TextBox") {
         AutomaticSize = Enum.AutomaticSize.Y,
         ClearTextOnFocus = false,
-
-        Text = format_text(),
+        Text = root.derive(function() return format_text(value_source()) end),
         TextXAlignment = align,
-        Size = UDim2.new(1/total, 0, 0, 0),
+        Size = UDim2.new(1 / total_inputs, 0, 0, 0),
 
         paint.text(),
         paint.background(),
-
         ui.flexitem("Shrink"),
         ui.padding(config.padding),
 
@@ -189,29 +245,78 @@ local function create_input(total: number, value: number, prefix: string, option
                 text_to_parse = string.sub(self.Text, #prefix + 1)
             end
             
-            local new_value = tonumber(text_to_parse) or raw_n()
-            raw_n( apply_modifiers(new_value, options) )
-            self.Text = format_text()
+            local new_value = tonumber(text_to_parse)
+            if new_value ~= nil then
+                local modified_value = apply_modifiers(new_value, options)
+                on_change(modified_value)
+            end
+            self.Text = format_text( value_source() )
         end,
+    }
+
+    return {
+        object = object,
     }
 end
 
-local function get_default(path: string, value: any)
-    local parts = string.split(path, "/")
-    local result = defaults
-    for _, part in parts do
-        result = result[part]
+local function create_data_type_inputs(value: any, suffix: string?, align_center: boolean?)
+    local data_type = typeof(value)
+    local id = data_type .. (suffix or "")
+
+    local component_count = get_component_count(value)
+    local prefixes = get_default("prefixes", id)
+    local decimal_places = get_default("decimal_places", data_type)
+
+    local objects = {}
+    local controls = {}
+    local source = root.source(value)
+    local changed = root.event()
+
+    for idx = 1, component_count do
+        local function on_component_change(new_component_value: number)
+            local current_composite_value = source()
+            local next_composite_value = write_component_value(current_composite_value, idx, new_component_value)
+            source(next_composite_value)
+            changed.fire()
+        end
+
+        local component_value_source = root.derive(function()
+            return read_component_value(source(), idx) :: number
+        end)
+        
+        local component_options: InputOptions = {
+            align = if align_center then "Center" else "Left",
+            decimal_places = decimal_places[idx],
+        }
+
+        local input_control = create_component_input(
+            component_count, 
+            component_value_source, 
+            prefixes[idx], 
+            component_options, 
+            on_component_change
+        )
+
+        controls[idx] = input_control
+        objects[idx] = input_control.object
+
+        root.mount(input_control.object)
     end
 
-    return (result::any)[typeof(value)]
+    return {
+        objects = objects,
+        changed = root.derive(changed.fired),
+        value = source,
+    }
 end
 
 return {
-    read_index = read_index,
-    write_index = write_index,
-    size = size,
-    create_input = create_input,
-    defaults = defaults,
-    valid_datatype = valid_datatype,
+    read_component_value = read_component_value,
+    write_component_value = write_component_value,
+    get_component_count = get_component_count,
+    create_component_input = create_component_input,
+    DEFAULTS = DEFAULTS,
+    is_valid_data_type = is_valid_data_type,
     get_default = get_default,
+    create_data_type_inputs = create_data_type_inputs,
 }

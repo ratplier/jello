@@ -205,7 +205,9 @@ local function run_if(condition: jello.source<boolean>, fn: () -> ())
 end
 
 local function bind_to_section(text: string, fn)
+	internal.profile(`demo/{text}`)
 	jello.section({ text = text }).with(fn)
+	internal.endprofile()
 end
 
 local function construct_header(name: string, fn)

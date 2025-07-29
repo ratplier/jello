@@ -189,7 +189,7 @@ end
 local internal = {
 	_tick = 0,
 	_env = 'root',
-	_debug = false,
+	_debug = true,
 	_paused = false,
 	_instances = instances,
 	_parent_stack_length = 0,
@@ -344,6 +344,8 @@ function internal.apply(instance: Instance, properties: props)
 end
 
 function internal.render(id: id)
+	internal.profile("render")
+
 	local object = internal._vdom[id]
 	local last_object = internal._last_vdom[id]
 	local instance = instances[id]
@@ -360,6 +362,8 @@ function internal.render(id: id)
 	end
 	
 	object.properties = props
+
+	internal.endprofile()
 	return instance
 end
 
@@ -442,7 +446,4 @@ function internal.create(class: string, id: string?)
 	end
 end
 
---function internal.scope(fn: () -> ())
---function internal.push_parent(parent: Instance)
---function internal.pop_parent()
 return internal
