@@ -17,7 +17,7 @@ return ui.widget("row", function(arguments: root.partial<arguments>?)
 	local object = root.create("Frame") {
 		AutomaticSize = Enum.AutomaticSize.XY,
 		BackgroundTransparency = 1,
-		Size = UDim2.new(1, 0, 0, args.height),
+		Size = UDim2.new(0, 0, 0, args.height),
 
 		ui.list_layout("Horizontal", args.padding),
 	}
