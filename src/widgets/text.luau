@@ -28,7 +28,6 @@ return ui.widget("text", function(arguments: partial<arguments>?)
 			
 			BackgroundTransparency = 1,
 			Size = UDim2.new(0, 0, 0, 16),
-			TextXAlignment = Enum.TextXAlignment.Left,
 
 			paint.text(),
 			ui.hovered(state.hovered),

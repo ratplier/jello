@@ -27,21 +27,20 @@ return ui.widget("tooltip", function(arguments: partial<arguments>?)
 	}
 	
 	local main = root.create("TextLabel") {
-        AutomaticSize = Enum.AutomaticSize.Y,
+        AutomaticSize = Enum.AutomaticSize.XY,
         
         Position = function()
             local mouse_pos = ui.mouse_position() - ui.inset()
             mouse_pos += TOOLTIP_OFFSET
             return UDim2.fromOffset(mouse_pos.x, mouse_pos.y)
         end,
-        Size = UDim2.new(0, 200, 0, 0),
-        TextXAlignment = Enum.TextXAlignment.Left,
 
         paint.text(),
         paint.tooltip(),
 
-        ui.padding(config.padding),
+        ui.padding(config.spacing),
         ui.hovered(state.hovered),
+        ui.constrain(nil, nil, 250, nil),
         
         TextWrapped = true,
         Text = root.default(args.text, "text"),

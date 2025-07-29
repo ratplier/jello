@@ -121,10 +121,8 @@ end
 
 function kit.constrain(min_x: number?, min_y: number?, max_x: number?, max_y: number?)
 	return internal.create("UISizeConstraint") {
-		PaddingTop = UDim.new(0, min_y or 0),
-		PaddingBottom = UDim.new(0, max_y or 0),
-		PaddingLeft = UDim.new(0, min_x or 0),
-		PaddingRight = UDim.new(0, max_x or 0),
+		MinSize = Vector2.new(min_x or 0, min_y or 0),
+		MaxSize = Vector2.new(max_x or math.huge, max_y or math.huge),
 	}
 end
 

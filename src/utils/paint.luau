@@ -18,6 +18,7 @@ function paint.text(active: value<boolean>?)
         Font = config.font,
         TextSize = config.textSize,
         TextTruncate = Enum.TextTruncate.AtEnd,
+		TextXAlignment = Enum.TextXAlignment.Left,
         
         ui.apply_color("Text", function()
             return

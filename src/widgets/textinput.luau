@@ -46,7 +46,6 @@ return ui.widget("textinput", function(arguments: partial<arguments>?)
             Size = UDim2.new(1, 0, 0, 16),
 
 			ClearTextOnFocus = false,
-			TextXAlignment = Enum.TextXAlignment.Left,
             TextYAlignment = Enum.TextYAlignment.Top,
 
             Text = args.text,

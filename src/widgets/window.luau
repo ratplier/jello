@@ -172,7 +172,6 @@ local function topbar(state: state, args: arguments)
 			return root.create("TextLabel") {
 				BackgroundTransparency = 1,
 				Size = UDim2.new(1, 0, 0, title_button_size),
-				TextXAlignment = Enum.TextXAlignment.Left,
 				LayoutOrder = 2,
 				Interactable = false,
 				
