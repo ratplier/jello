@@ -229,12 +229,13 @@ return function()
 	}
 	
 	jello.window({ title = "jello demo" }).with(function()
-		jello.text { text = `wazzup ({jello.version})` }
+		jello.row().with(function()
+			jello.text { text = `jello (v{jello.version})` }
+			hint("hover over these components to see useful info")
+		end)
 		
 		bind_checkbox_to_source("recursive window", state.show_recursive_window)
 		bind_checkbox_to_source("runtime info", state.show_runtime_info)
-
-		hint("hover over a widget to see its documentation")
 
 		construct_header("widgets", function()
 			bind_to_section("text", text)
