@@ -421,7 +421,11 @@ function internal.get_parent()
 	return internal._parent_stack[internal._parent_stack_length] or internal._target
 end
 
-function internal.mount(object: Instance, target: Instance?)
+function internal.mount(object: Instance, target: (Instance | "root")?)
+	if target == "root" then
+		target = internal._target
+	end
+	
 	target = target or internal.get_parent()
 	write_property(object, "Parent", target)
 end

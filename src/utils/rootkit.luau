@@ -119,7 +119,7 @@ function kit.conditional<T, R, A...>(callback: source<T> | T, fn: (A...) -> R, .
 	return fn(...)
 end
 
-function kit.mount(object: Instance | () -> Instance, target: Instance?)
+function kit.mount(object: Instance | () -> Instance, target: (Instance | "root")?)
 	if typeof(object) == "function" then
 		internal.mount(object(), target)
 	else

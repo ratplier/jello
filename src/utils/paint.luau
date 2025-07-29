@@ -2,6 +2,7 @@
 local ui = require("./uikit")
 local root = require("./rootkit")
 local config = require("../config")
+local color4 = require("./color4")
 
 type source<T> = root.source<T>
 type value<T> = source<T> | T
@@ -69,6 +70,19 @@ function paint.window(collapsed: value<boolean>?)
             if read(collapsed) == true then colors.WindowBgCollapsed
             else colors.WindowBg
     end)
+end
+
+function paint.tooltip()
+    return {
+        ui.apply_color("Background", colors.TooltipBg),
+        root.create("UIStroke") {
+            ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+            Thickness = 1,
+
+            Color = color4.read_color3(colors.TooltipBorder),
+            Transparency = color4.read_alpha(colors.TooltipBorder),
+        },
+    }
 end
 
 function paint.no_background()

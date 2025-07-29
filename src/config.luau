@@ -26,6 +26,9 @@ return {
 		Header = color4.create(66, 150, 250, 0.31),
 		HeaderHovered = color4.create(66, 150, 250, 0.62),
 		HeaderActive = color4.create(15, 135, 250, 1),
+
+        TooltipBg = color4.create(20, 20, 20, 0.94),
+		TooltipBorder = color4.create(160, 160, 175, 0.62),
 		
 		Seperator = color4.create(99, 99, 99, 0.62),
 		RadialCenter = color4.create(66, 150, 250, 1),

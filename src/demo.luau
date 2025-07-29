@@ -2,6 +2,14 @@
 local jello = require("./")
 local internal = require("./internal")
 
+local function hint(text: string)
+	local label = jello.text {  text = '(?)', color = Color3.fromRGB(160, 160, 160) }
+
+	if label.hovered() then
+		jello.tooltip { text = text }
+	end
+end
+
 -- showcase
 local function checkbox()
 	jello.checkbox { label = "checkbox with label" }
@@ -225,6 +233,8 @@ return function()
 		
 		bind_checkbox_to_source("recursive window", state.show_recursive_window)
 		bind_checkbox_to_source("runtime info", state.show_runtime_info)
+
+		hint("hover over a widget to see its documentation")
 
 		construct_header("widgets", function()
 			bind_to_section("text", text)

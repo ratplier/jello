@@ -26,6 +26,11 @@ function kit.mouse_position()
 	return vector.create(pos.X, pos.Y)
 end
 
+function kit.inset()
+	local inset = GuiService:GetGuiInset()
+	return vector.create(inset.X, inset.Y)
+end
+
 function kit.is_mouse_over(object: GuiObject)
 	local inset = GuiService:GetGuiInset()
 	local position = kit.mouse_position()
