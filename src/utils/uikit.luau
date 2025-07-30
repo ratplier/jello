@@ -126,6 +126,13 @@ function kit.constrain(min_x: number?, min_y: number?, max_x: number?, max_y: nu
 	}
 end
 
+function kit.aspect_ratio(x: number, y: number?)
+	return internal.create("UIAspectRatioConstraint") {
+		AspectRatio = x / (y or 1),
+		DominantAxis = Enum.DominantAxis.Height
+	}
+end
+
 function kit.hovered(fn: (boolean) -> ())
 	return function(self)
 		local hovered = kit.is_mouse_over(self)

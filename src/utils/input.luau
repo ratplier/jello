@@ -4,13 +4,14 @@ local paint = require("./paint")
 local ui = require("./uikit")
 local config = require("../config")
 
+type source<T> = root.source<T>
+
 export type DataType = "number" | "Vector2" | "Vector3" | "vector" | "UDim" | "UDim2" | "Color3" | "buffer" | "Rect"
 export type InputOptions = {
     align: ("Left" | "Center" | "Right")?,
     decimal_places: number?,
     min: number?,
     max: number?,
-    step: number?,
 }
 
 local DATA_TYPES = {"number", "Vector2", "Vector3", "vector", "UDim", "UDim2", "Color3", "buffer", "Rect"}
@@ -184,7 +185,7 @@ end
 
 local function get_default(category: string, item: string?)
     local result = DEFAULTS[category]
-    if item ~= nil then
+    if result and item ~= nil then
         result = (result :: any)[item]
     end
     return result
@@ -193,19 +194,13 @@ end
 local function apply_modifiers(value: number, options: InputOptions)
     local min = options.min or -math.huge
     local max = options.max or math.huge
-    local step = options.step
 
-    local number = math.clamp(value, min, max)
-
-    if step ~= nil then
-        number = math.round(number / step) * step
-    end
-    return number
+    return math.clamp(value, min, max)
 end
 
 local function create_component_input(
     total_inputs: number, 
-    value_source: root.source<number>,
+    value_source: source<number>,
     prefix: string, 
     options: InputOptions,
     on_change: (new_value: number) -> ()
@@ -225,9 +220,10 @@ local function create_component_input(
     local object = root.create("TextBox") {
         AutomaticSize = Enum.AutomaticSize.Y,
         ClearTextOnFocus = false,
-        Text = root.derive(function() return format_text(value_source()) end),
         TextXAlignment = align,
         Size = UDim2.new(1 / total_inputs, 0, 0, 0),
+
+        Text = format_text( value_source() ),
 
         paint.text(),
         paint.background(),
@@ -259,17 +255,41 @@ local function create_component_input(
     }
 end
 
-local function create_data_type_inputs(value: any, suffix: string?, align_center: boolean?)
-    local data_type = typeof(value)
-    local id = data_type .. (suffix or "")
+type options = {
+    suffix: string?,
+    align_center: boolean?,
 
-    local component_count = get_component_count(value)
+    min: number?,
+    max: number?,
+    step: number?,
+    decimal_places: number?,
+}
+local function get_index(v: any, idx: number)
+    if typeof(v) == "table" then
+        return (v::any)[idx]
+    end
+    return v
+end
+
+local function create_data_type_inputs(value: root.value<any>, options: options?)
+    local raw_value = root.read(value)
+
+    local opt = root.default(options, {}) :: options
+    local data_type = typeof(raw_value)
+    local id = data_type .. (opt.suffix or "")
+
+    local align_center = opt.align_center
+    local min = opt.min or get_default("min", data_type)
+    local max = opt.max or get_default("max", data_type)
+    local step = opt.step or get_default("step", data_type)
+    local decimal_places = opt.decimal_places or get_default("decimal_places", data_type)
+
+    local component_count = get_component_count(raw_value)
     local prefixes = get_default("prefixes", id)
-    local decimal_places = get_default("decimal_places", data_type)
 
     local objects = {}
     local controls = {}
-    local source = root.source(value)
+    local source = root.from(value)
     local changed = root.event()
 
     for idx = 1, component_count do
@@ -277,6 +297,7 @@ local function create_data_type_inputs(value: any, suffix: string?, align_center
             local current_composite_value = source()
             local next_composite_value = write_component_value(current_composite_value, idx, new_component_value)
             source(next_composite_value)
+
             changed.fire()
         end
 
@@ -286,7 +307,10 @@ local function create_data_type_inputs(value: any, suffix: string?, align_center
         
         local component_options: InputOptions = {
             align = if align_center then "Center" else "Left",
-            decimal_places = decimal_places[idx],
+            decimal_places = get_index(decimal_places, idx),
+            min = get_index(min, idx),
+            max = get_index(max, idx),
+            step = get_index(step, idx),
         }
 
         local input_control = create_component_input(
@@ -310,6 +334,76 @@ local function create_data_type_inputs(value: any, suffix: string?, align_center
     }
 end
 
+local function create_button(
+    text: string,
+    on_click: (self: GuiObject, x: number, y: number) -> ()
+)
+    local clicked = root.event()
+    local hovered = root.source(false)
+    local object = root.create("TextLabel") {
+        Text = text,
+        TextXAlignment = Enum.TextXAlignment.Center,
+
+        paint.text(),
+        paint.button(clicked.fired, hovered),
+
+        ui.aspect_ratio(1),
+        ui.hovered(hovered),
+        ui.clicked("Button1", function(self, x, y)
+            clicked.fire()
+            on_click(self, x, y)
+        end),
+    } :: GuiObject
+
+    if object.Parent and object.Parent:IsA("GuiObject") then
+        local size = object.Parent.AbsoluteSize.Y
+        object.Size = UDim2.fromOffset(size, size)
+    end
+
+    root.mount(object)
+    return object
+end
+
+local function create_increment(
+    value: source<number>,
+    increment: number,
+    on_change: ((incremented: boolean) -> ())?
+)
+    assert(increment > 0, "increment must be greater than 0")
+    assert(is_valid_data_type(value()), "invalid datatype passed to create_increment")
+    
+    local add = create_button("+", function(self: GuiObject, x: number, y: number)
+        value(value() + increment)
+        if on_change then on_change(true) end
+    end)
+
+    local subtract = create_button("-", function(self: GuiObject, x: number, y: number)
+        value(value() - increment)
+        if on_change then on_change(false) end
+    end)
+
+    return root.create("Frame") {
+        AutomaticSize = Enum.AutomaticSize.XY,
+
+        add,
+        subtract,
+
+        ui.flexitem("Shrink"),
+        ui.padding(config.padding),
+        ui.list_layout("Horizontal", config.spacing),
+    }
+end
+
+local function create_color_preview(value: source<Color3>)
+    local object = root.create("Frame") {
+        Size = UDim2.new(1, 0, 0, 20),
+        BackgroundColor3 = value(),
+    }
+
+    root.mount(object)
+    return object
+end
+
 return {
     read_component_value = read_component_value,
     write_component_value = write_component_value,
@@ -319,4 +413,6 @@ return {
     is_valid_data_type = is_valid_data_type,
     get_default = get_default,
     create_data_type_inputs = create_data_type_inputs,
+    create_increment = create_increment,
+    create_color_preview = create_color_preview,
 }

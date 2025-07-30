@@ -212,6 +212,8 @@ local internal = {
 	assert = assert,
 	throw = throw,
 	read = get_value,
+	read_property = read_property,
+	write_property = write_property,
 	
 	verbose = true,
 }

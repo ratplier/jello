@@ -1,8 +1,10 @@
 --!strict
+local UserInputService = game:GetService("UserInputService")
+
 local internal = require("../internal")
 
 export type source<T> = internal.source<T>
-export type value<T> = source<T> | T
+export type value<T> = T | source<T>
 export type props = internal.props
 
 type function _partial(object: type)
@@ -65,12 +67,21 @@ function kit.source<T>(default: T?): source<T>
 	return internal.source(default, id)
 end
 
-function kit.derive<T>(fn: () -> T): source<T>
+function kit.from<T>(value: value<T>): source<T>
+	if typeof(value) == "function" then
+		return value
+	end
+	return kit.source(value)
+end
+
+kit.derive = function<T>(fn)
 	local src = internal.source()
 	local value = internal.read(fn) :: T & any
 	if value ~= src() then src(value) end
 	return src
-end
+end ::
+	& (<T>(fn: () -> T) -> source<T>)
+	& (<T>(value: T) -> source<T>)
 
 function kit.default<T>(value: any?, default: T): T
 	local ref_type = typeof(default)
@@ -114,7 +125,7 @@ function kit.close_scope(depth: number?)
 	internal.pop_parent(depth)
 end
 
-function kit.conditional<T, R, A...>(callback: source<T> | T, fn: (A...) -> R, ...: A...): R
+function kit.conditional<T, R, A...>(callback: value<T> | T, fn: (A...) -> R, ...: A...): R
 	if internal.read(callback) ~= true then return nil end
 	return fn(...)
 end
@@ -153,6 +164,29 @@ function kit.event(): { fire: () -> (), fired: () -> boolean }
 			return last_updated() == internal._tick
 		end
 	}
+end
+
+function kit.keys_pressed(...: Enum.KeyCode | string): boolean
+	for _, key: Enum.KeyCode in { ... } do
+		if key == "any" then return true end
+		if key == "none" then return false end
+
+		if typeof(key) == "string" then
+			key = Enum.KeyCode:FromName(key) :: Enum.KeyCode
+		end
+		if key == Enum.KeyCode.Unknown then continue end
+
+		if UserInputService:IsKeyDown(key :: Enum.KeyCode) then
+			return true
+		end
+	end
+	return false
+end
+
+function kit.force(property: string, value: any)
+	return function(self: Instance)
+		internal.write_property(self, property, internal.read(value))
+	end
 end
 
 return kit
