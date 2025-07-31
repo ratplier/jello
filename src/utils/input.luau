@@ -13,9 +13,19 @@ export type InputOptions = {
     min: number?,
     max: number?,
 }
+export type options = {
+    suffix: string?,
+    align_center: boolean?,
+
+    min: number?,
+    max: number?,
+    step: number?,
+    decimal_places: number?,
+}
 
 local DATA_TYPES = {"number", "Vector2", "Vector3", "vector", "UDim", "UDim2", "Color3", "buffer", "Rect"}
 local DATA_TYPE_SIZES = { number = 1, Vector2 = 2, Vector3 = 3, vector = 3, UDim = 2, UDim2 = 4, Color3 = 3, buffer = 4, Rect = 4 }
+local FLOAT_PRECISION = 12
 
 local read_handlers: {[DataType]: (any, number) -> any} = {
     number = function(value: number, index: number): number
@@ -191,11 +201,17 @@ local function get_default(category: string, item: string?)
     return result
 end
 
+local function clip(value: number, places: number)
+    local multiplier = 10 ^ places
+    return math.floor(value * multiplier) / multiplier
+end
+
 local function apply_modifiers(value: number, options: InputOptions)
     local min = options.min or -math.huge
     local max = options.max or math.huge
 
-    return math.clamp(value, min, max)
+    local number = math.clamp(value, min, max)
+    return clip(number, options.decimal_places or FLOAT_PRECISION)
 end
 
 local function create_component_input(
@@ -255,15 +271,6 @@ local function create_component_input(
     }
 end
 
-type options = {
-    suffix: string?,
-    align_center: boolean?,
-
-    min: number?,
-    max: number?,
-    step: number?,
-    decimal_places: number?,
-}
 local function get_index(v: any, idx: number)
     if typeof(v) == "table" then
         return (v::any)[idx]
@@ -373,12 +380,16 @@ local function create_increment(
     assert(is_valid_data_type(value()), "invalid datatype passed to create_increment")
     
     local add = create_button("+", function(self: GuiObject, x: number, y: number)
-        value(value() + increment)
+        local result = clip(value() + increment, FLOAT_PRECISION)
+        value(result)
+
         if on_change then on_change(true) end
     end)
 
     local subtract = create_button("-", function(self: GuiObject, x: number, y: number)
-        value(value() - increment)
+        local result = clip(value() - increment, FLOAT_PRECISION)
+        value(result)
+        
         if on_change then on_change(false) end
     end)
 
@@ -416,3 +427,4 @@ return {
     create_increment = create_increment,
     create_color_preview = create_color_preview,
 }
+

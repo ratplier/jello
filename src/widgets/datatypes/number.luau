@@ -30,12 +30,19 @@ local DEFAULT_MIN = -1e6
 local DEFAULT_MAX = 1e6
 local DEFAULT_VALUE = 0
 
+local function decimal_len(n)
+	local s = tostring(n)
+    local l = s:len()
+	local i = s:find("%.") or l
+	return l - i
+end
+
 return {
     base = ui.widget("number-input", function(arguments: partial<arguments>)
         local changed = root.event()
         local args = root.default(arguments, {
             text = "input number", min = DEFAULT_MIN, max = DEFAULT_MAX,
-            value = DEFAULT_VALUE, increment = 1
+            value = DEFAULT_VALUE
         }) :: arguments
 
         local state: state = {
@@ -52,6 +59,7 @@ return {
                 min = args.min,
                 max = args.max,
                 increment = increment,
+                decimal_places = decimal_len(increment),
             })
 
             if inputs.changed() then
