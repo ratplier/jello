@@ -26,8 +26,8 @@ Basic Widget API
   - ✅ RadioButton
 
 Image Widget API
-  - ❌ Image
-  - ❌ ImageButton
+  - ✅ Image
+  - ✅ ImageButton
 
 Tree Widget API
   - ✅ Tree (Section)

@@ -420,6 +420,7 @@ local function create_button(
     local clicked = root.event()
     local hovered = root.source(false)
     local object = root.create("TextLabel") {
+        Active = true,
         Text = text,
         TextXAlignment = Enum.TextXAlignment.Center,
 

@@ -47,7 +47,7 @@ return {
 		xCloseIcon = "rbxasset://textures/AnimationEditor/icon_close.png", -- best approximation for a close X which roblox supports, needs to be scaled about 2x
 		bottomRightCorner = "rbxasset://textures/ui/InspectMenu/gr-item-selector-triangle.png", -- used in window resize icon in bottom right
 		checkMark = "rbxasset://textures/AnimationEditor/icon_checkmark.png",
-		unknownImage = "rbxasset://textures/ui/GuiImagePlaceholder.png",
+		placeholderImage = "rbxasset://textures/ui/GuiImagePlaceholder.png",
 	},
 	
 	font = Enum.Font.RobotoMono,
