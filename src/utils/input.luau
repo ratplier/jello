@@ -1,4 +1,6 @@
 --!strict
+local UserInputService = game:GetService("UserInputService")
+
 local root = require("./rootkit")
 local paint = require("./paint")
 local ui = require("./uikit")
@@ -232,6 +234,10 @@ local function create_component_input(
         return `{prefix}{result}`
     end
 
+    local active = root.source(false)
+    local drag_connection: RBXScriptConnection?
+    local ended_connection: RBXScriptConnection?
+
     local object = root.create("TextBox") {
         AutomaticSize = Enum.AutomaticSize.Y,
         ClearTextOnFocus = false,
@@ -239,6 +245,7 @@ local function create_component_input(
         Size = UDim2.new(1 / total_inputs, 0, 0, 0),
 
         Text = format_text( value_source() ),
+        Active = active,
 
         paint.text(),
         paint.background(),
@@ -264,7 +271,41 @@ local function create_component_input(
             end
             self.Text = format_text( value_source() )
         end,
+
+        InputBegan = function(self: TextBox, input: InputObject)
+            if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+            if drag_connection ~= nil then return end
+            if active() == true then return end
+
+            self:ReleaseFocus()
+
+			local start_position = input.Position
+            local start_value = value_source()
+            drag_connection = UserInputService.InputChanged:Connect(function(input: InputObject)
+                if input.UserInputType ~= Enum.UserInputType.MouseMovement then return end
+
+				local delta = start_position - input.Position
+                local dx = delta.X
+
+                local places = options.decimal_places or FLOAT_PRECISION
+                local new_value = clip(start_value - dx * 1/config.drag_sensitivity, places)
+                local modified_value = apply_modifiers(new_value, options)
+                on_change(modified_value)
+            end)
+
+            ended_connection = UserInputService.InputEnded:Connect(function(input: InputObject)
+                if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+                if drag_connection == nil then return end
+                if ended_connection == nil then return end
+
+                ended_connection:Disconnect()
+                drag_connection:Disconnect()
+                drag_connection = nil
+            end)
+        end,
     }
+
+    active( not root.keys_pressed("LeftControl", "RightControl") )
 
     return {
         object = object,

@@ -33,11 +33,16 @@ local function error_handler(message: string)
 	end
 end
 
+local datatypes = {
+	number = require(widgets.datatypes.number),
+}
 local jello = {
 	update_frequency = -1,
 	version = "0.1.0",
 	_initialized = nil :: boolean?,
 	_target = nil :: Instance?,
+
+	number = datatypes.number.base,
 
 	row = require(widgets.format.row),
 	seperator = require(widgets.format.seperator),
