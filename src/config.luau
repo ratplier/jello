@@ -58,7 +58,8 @@ return {
 
 	spacing = 8,
 	padding = 4,
-
+	
+	default_value_increment = 0.1,
 	drag_delay = 0.3,
 	drag_sensitivity = 10,
 }

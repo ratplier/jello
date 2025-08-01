@@ -1,4 +1,5 @@
 --!strict
+local config = require("../../config")
 local input = require("../../utils/input")
 local root = require("../../utils/rootkit")
 local ui = require("../../utils/uikit")
@@ -51,9 +52,8 @@ return {
             value = root.from(args.value) :: source<Color3>,
         }
 
-        row().with(function()
-            local increment = 1
-            
+        row({ fixed_size = true }).with(function()
+            local increment = config.default_value_increment
             local inputs = input.create_data_type_inputs(state.value, {
                 min = args.min,
                 max = args.max,

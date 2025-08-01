@@ -45,7 +45,7 @@ local read_handlers: {[DataType]: (any, number) -> any} = {
         if index == 3 then return vec.Z end
         error('Index out of range')
     end,
-    vector = function(vec: {x: number, y: number, z: number}, index: number): number
+    vector = function(vec: vector, index: number): number
         if index == 1 then return vec.x end
         if index == 2 then return vec.y end
         if index == 3 then return vec.z end
@@ -78,7 +78,6 @@ local read_handlers: {[DataType]: (any, number) -> any} = {
     end,
     Color3_HSV = function(color: Color3, index: number): number
         local h, s, v = color:ToHSV()
-        print("read", h, s, v)
         if index == 1 then return h * 255 end
         if index == 2 then return s * 255 end
         if index == 3 then return v * 255 end
@@ -104,10 +103,10 @@ local write_handlers: {[DataType]: (any, number, any) -> any} = {
         if index == 3 then return Vector3.new(target.X, target.Y, value) end
         error('Index out of range')
     end,
-    vector = function(target: {x: number, y: number, z: number}, index: number, value: number): {x: number, y: number, z: number}
-        if index == 1 then return {x = value, y = target.y, z = target.z} end
-        if index == 2 then return {x = target.x, y = value, z = target.z} end
-        if index == 3 then return {x = target.x, y = target.y, z = value} end
+    vector = function(target: vector, index: number, value: number): {x: number, y: number, z: number}
+        if index == 1 then return vector.create(value, target.y, target.z) end
+        if index == 2 then return vector.create(target.x, value, target.z) end
+        if index == 3 then return vector.create(target.x, target.y, value) end
         error('Index out of range')
     end,
     UDim = function(target: UDim, index: number, value: number): UDim
@@ -235,7 +234,7 @@ local function apply_modifiers(value: number, options: InputOptions)
 end
 
 local function create_component_input(
-    total_inputs: number, 
+    total_inputs: number,
     value_source: source<number>,
     prefix: string, 
     options: InputOptions,
@@ -258,10 +257,25 @@ local function create_component_input(
     local ended_connection: RBXScriptConnection?
 
     local object = root.create("TextBox") {
+        function(self: TextBox)
+            active( not root.keys_pressed("LeftControl", "RightControl") )
+
+            local parent = self.Parent :: Frame
+            if not parent then return end
+
+            local ui_list_layout = parent:FindFirstChildOfClass("UIListLayout")
+            if not ui_list_layout then return end
+            
+            local total_padding = (total_inputs - 1) * config.spacing
+            local scale = 1/total_inputs
+            local offset = total_padding/total_inputs
+
+            self.Size = UDim2.new(scale, -offset, 0, 0)
+        end,
+
         AutomaticSize = Enum.AutomaticSize.Y,
         ClearTextOnFocus = false,
         TextXAlignment = align,
-        Size = UDim2.new(1 / total_inputs, 0, 0, 0),
 
         Text = format_text( value_source() ),
         Active = active,
@@ -323,8 +337,6 @@ local function create_component_input(
             end)
         end,
     }
-
-    active( not root.keys_pressed("LeftControl", "RightControl") )
 
     return {
         object = object,
@@ -414,7 +426,6 @@ local function create_button(
         paint.text(),
         paint.button(clicked.fired, hovered),
 
-        ui.aspect_ratio(1),
         ui.hovered(hovered),
         ui.clicked("Button1", function(self, x, y)
             clicked.fire()
