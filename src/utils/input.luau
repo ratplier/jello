@@ -8,12 +8,13 @@ local config = require("../config")
 
 type source<T> = root.source<T>
 
-export type DataType = "number" | "Vector2" | "Vector3" | "vector" | "UDim" | "UDim2" | "Color3" | "buffer" | "Rect"
+export type DataType = "number" | "Vector2" | "Vector3" | "vector" | "UDim" | "UDim2" | "Color3" | "buffer" | "Rect" | string
 export type InputOptions = {
     align: ("Left" | "Center" | "Right")?,
     decimal_places: number?,
     min: number?,
     max: number?,
+    suffix: string?,
 }
 export type options = {
     suffix: string?,
@@ -75,6 +76,14 @@ local read_handlers: {[DataType]: (any, number) -> any} = {
         if index == 3 then return color.B * 255 end
         error('Index out of range')
     end,
+    Color3_HSV = function(color: Color3, index: number): number
+        local h, s, v = color:ToHSV()
+        print("read", h, s, v)
+        if index == 1 then return h * 255 end
+        if index == 2 then return s * 255 end
+        if index == 3 then return v * 255 end
+        error('Index out of range')
+    end,
     buffer = function(color_buffer: buffer, index: number): number
         return buffer.readu8(color_buffer, index - 1)
     end,
@@ -126,6 +135,13 @@ local write_handlers: {[DataType]: (any, number, any) -> any} = {
         if index == 3 then return Color3.fromRGB(target.R * 255, target.G * 255, value) end
         error('Index out of range')
     end,
+    Color3_HSV = function(target: Color3, index: number, value: number): Color3
+        local h, s, v = target:ToHSV()
+        if index == 1 then return Color3.fromHSV(value/255, s, v) end
+        if index == 2 then return Color3.fromHSV(h, value/255, v) end
+        if index == 3 then return Color3.fromHSV(h, s, value/255) end
+        error('Index out of range')
+    end,
     buffer = function(target: buffer, index: number, value: number): buffer
         buffer.writeu8(target, index - 1, value)
         return target
@@ -141,6 +157,7 @@ local DEFAULTS = {
         UDim = { "", "" },
         UDim2 = { "", "", "", "" },
         Color3 = { "r: ", "g: ", "b: " },
+        Color3_HSV = { "h: ", "s: ", "v: " },
         buffer = { "r: ", "g: ", "b: ", "a: " }, -- color4
         Rect = { "minX: ", "minY: ", "maxX: ", "maxY: " },
     },
@@ -161,11 +178,12 @@ local function is_valid_data_type(value: any)
     return table.find(DATA_TYPES, typeof(value)) ~= nil
 end
 
-local function read_component_value<T>(target: T, index: number): number?
+local function read_component_value<T>(target: T, index: number, suffix: string?): number?
     root.assert(is_valid_data_type(target), "Invalid data type for reading component value.")
 
+    local suf = suffix or ""
     local data_type = typeof(target) :: DataType
-    local handler = read_handlers[data_type]
+    local handler = read_handlers[data_type .. suf]
 
     if handler then
         local result = handler(target, index)
@@ -175,12 +193,13 @@ local function read_component_value<T>(target: T, index: number): number?
     error(`Unknown type, target, or index: {data_type}, {target}, {index}`)
 end
 
-local function write_component_value<T>(target: T, index: number, value: any): T
+local function write_component_value<T>(target: T, index: number, value: any, suffix: string?): T
     root.assert(is_valid_data_type(target), "Invalid data type for writing component value.")
 
+    local suf = suffix or ""
     local data_type = typeof(target) :: DataType
-    local handler = write_handlers[data_type]
-    
+    local handler = write_handlers[data_type .. suf]
+
     if handler then
         return handler(target, index, value)
     else
@@ -324,7 +343,8 @@ local function create_data_type_inputs(value: root.value<any>, options: options?
 
     local opt = root.default(options, {}) :: options
     local data_type = typeof(raw_value)
-    local id = data_type .. (opt.suffix or "")
+    local suffix = opt.suffix
+    local id = data_type .. (suffix or "")
 
     local align_center = opt.align_center
     local min = opt.min or get_default("min", data_type)
@@ -341,16 +361,15 @@ local function create_data_type_inputs(value: root.value<any>, options: options?
     local changed = root.event()
 
     for idx = 1, component_count do
-        local function on_component_change(new_component_value: number)
-            local current_composite_value = source()
-            local next_composite_value = write_component_value(current_composite_value, idx, new_component_value)
-            source(next_composite_value)
+        local function on_component_change(new_value: number)
+            local next_value = write_component_value(source(), idx, new_value, suffix)
+            source(next_value)
 
             changed.fire()
         end
 
         local component_value_source = root.derive(function()
-            return read_component_value(source(), idx) :: number
+            return read_component_value(source(), idx, suffix) :: number
         end)
         
         local component_options: InputOptions = {
@@ -448,9 +467,13 @@ end
 
 local function create_color_preview(value: source<Color3>)
     local object = root.create("Frame") {
-        Size = UDim2.new(1, 0, 0, 20),
         BackgroundColor3 = value(),
-    }
+    } :: Frame
+
+    if object.Parent and object.Parent:IsA("GuiObject") then
+        local size = object.Parent.AbsoluteSize.Y
+        object.Size = UDim2.fromOffset(size, size)
+    end
 
     root.mount(object)
     return object
