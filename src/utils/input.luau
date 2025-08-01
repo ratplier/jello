@@ -210,8 +210,7 @@ local function apply_modifiers(value: number, options: InputOptions)
     local min = options.min or -math.huge
     local max = options.max or math.huge
 
-    local number = math.clamp(value, min, max)
-    return clip(number, options.decimal_places or FLOAT_PRECISION)
+    return math.clamp(value, min, max)
 end
 
 local function create_component_input(
@@ -258,7 +257,8 @@ local function create_component_input(
             end
             
             local new_value = tonumber(text_to_parse)
-            if new_value ~= nil then
+            local places = options.decimal_places or FLOAT_PRECISION
+            if new_value ~= nil and clip(new_value, places) == new_value then
                 local modified_value = apply_modifiers(new_value, options)
                 on_change(modified_value)
             end
