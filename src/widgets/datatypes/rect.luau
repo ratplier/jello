@@ -59,7 +59,6 @@ return {
             })
 
             if inputs.changed() then
-                state.value( inputs.value() )
                 changed.fire()
             end
 

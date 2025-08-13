@@ -54,6 +54,7 @@ return {
 	minWindowSize = vector.create(200, 100),
 	cornerRadius = 5,
 	textSize = 14,
+	rowHeight = 16,
 	strokeThickness = 1.5,
 
 	spacing = 8,

@@ -13,7 +13,7 @@ export type arguments = {
 }
 
 return ui.widget("row", function(arguments: root.partial<arguments>?)
-	local args = root.default(arguments, { height = 16, padding = config.spacing }) :: arguments
+	local args = root.default(arguments, { height = config.rowHeight, padding = config.spacing }) :: arguments
 
 	local mode = if args.fixed_size then "Y" else "XY"
 	local object = root.create("Frame") {

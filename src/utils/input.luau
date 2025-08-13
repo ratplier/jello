@@ -6,29 +6,33 @@ local paint = require("./paint")
 local ui = require("./uikit")
 local config = require("../config")
 
+local row = require("../widgets/format/row")
+
 type source<T> = root.source<T>
+type value<T> = root.value<T>
 
 export type DataType = "number" | "Vector2" | "Vector3" | "vector" | "UDim" | "UDim2" | "Color3" | "buffer" | "Rect" | string
-export type InputOptions = {
-    align: ("Left" | "Center" | "Right")?,
-    decimal_places: number?,
-    min: number?,
-    max: number?,
-    suffix: string?,
-}
 export type options = {
-    suffix: string?,
-    align_center: boolean?,
+    prefix: string?,
+    align: ("Left" | "Center" | "Right")?,
+
+    id_suffix: string?,
 
     min: number?,
     max: number?,
-    step: number?,
+    increment: number?,
     decimal_places: number?,
+
+    has_buttons: boolean?,
+    has_color_preview: boolean?,
 }
 
 local DATA_TYPES = {"number", "Vector2", "Vector3", "vector", "UDim", "UDim2", "Color3", "buffer", "Rect"}
 local DATA_TYPE_SIZES = { number = 1, Vector2 = 2, Vector3 = 3, vector = 3, UDim = 2, UDim2 = 4, Color3 = 3, buffer = 4, Rect = 4 }
 local FLOAT_PRECISION = 12
+
+local CONTAINER_WIDTH = 0.65
+local BUTTON_SIZE = config.rowHeight + config.padding
 
 local read_handlers: {[DataType]: (any, number) -> any} = {
     number = function(value: number, index: number): number
@@ -157,8 +161,8 @@ local DEFAULTS = {
         UDim2 = { "", "", "", "" },
         Color3 = { "r: ", "g: ", "b: " },
         Color3_HSV = { "h: ", "s: ", "v: " },
-        buffer = { "r: ", "g: ", "b: ", "a: " }, -- color4
-        Rect = { "minX: ", "minY: ", "maxX: ", "maxY: " },
+        --buffer = { "r: ", "g: ", "b: ", "a: " }, -- color4
+        Rect = { "", "", "", "" },
     },
     decimal_places = {
         number = { nil },
@@ -168,7 +172,7 @@ local DEFAULTS = {
         UDim = { 3, 0 },
         UDim2 = { 3, 0, 3, 0 },
         Color3 = { 0, 0, 0 },
-        buffer = { 0, 0, 0, 0 }, -- Color4
+        --buffer = { 0, 0, 0, 0 }, -- Color4
         Rect = { nil, nil, nil, nil },
     },
 }
@@ -206,7 +210,7 @@ local function write_component_value<T>(target: T, index: number, value: any, su
     end
 end
 
-local function get_component_count(value: any)
+local function get_component_count(value: any): number
     root.assert(is_valid_data_type(value), "Invalid data type for getting component count.")
 
     local data_type = typeof(value) :: DataType
@@ -215,8 +219,8 @@ end
 
 local function get_default(category: string, item: string?)
     local result = DEFAULTS[category]
-    if result and item ~= nil then
-        result = (result :: any)[item]
+    if result ~= nil and item ~= nil then
+        result = (result::any)[item]
     end
     return result
 end
@@ -226,63 +230,53 @@ local function clip(value: number, places: number)
     return math.floor(value * multiplier) / multiplier
 end
 
-local function apply_modifiers(value: number, options: InputOptions)
+local function apply_modifiers(value: number, options: options)
     local min = options.min or -math.huge
     local max = options.max or math.huge
 
     return math.clamp(value, min, max)
 end
 
-local function create_component_input(
-    total_inputs: number,
+local function create_input_component(
+    width: UDim,
     value_source: source<number>,
-    prefix: string, 
-    options: InputOptions,
+    options: options,
     on_change: (new_value: number) -> ()
 )
-    options = options or {} :: InputOptions
+    options = options or {} :: options
     local places = options.decimal_places
     local align = Enum.TextXAlignment:FromName(options.align or "Left")
 
-    local function format_text(value: number)
-        local result = value
+    local function format_text()
+        local result = value_source()
         if places ~= nil then
             result = string.format(`%.{places}f`::any, result)
         end
-        return `{prefix}{result}`
+        return `{options.prefix}{result}`
     end
 
     local active = root.source(false)
+    local prefix = options.prefix :: string
     local drag_connection: RBXScriptConnection?
     local ended_connection: RBXScriptConnection?
 
     local object = root.create("TextBox") {
         function(self: TextBox)
             active( not root.keys_pressed("LeftControl", "RightControl") )
-
-            local parent = self.Parent :: Frame
-            if not parent then return end
-
-            local ui_list_layout = parent:FindFirstChildOfClass("UIListLayout")
-            if not ui_list_layout then return end
-            
-            local total_padding = (total_inputs - 1) * config.spacing
-            local scale = 1/total_inputs
-            local offset = total_padding/total_inputs
-
-            self.Size = UDim2.new(scale, -offset, 0, 0)
         end,
 
         AutomaticSize = Enum.AutomaticSize.Y,
         ClearTextOnFocus = false,
         TextXAlignment = align,
 
-        Text = format_text( value_source() ),
         Active = active,
+        Text = format_text,
+        Size = function()
+            return UDim2.new( width, UDim.new(0, 0) )
+        end,
 
         paint.text(),
         paint.background(),
-        ui.flexitem("Shrink"),
         ui.padding(config.padding),
 
         Focused = function(self: TextBox)
@@ -301,8 +295,9 @@ local function create_component_input(
             if new_value ~= nil and clip(new_value, places) == new_value then
                 local modified_value = apply_modifiers(new_value, options)
                 on_change(modified_value)
+            else
+                self.Text = format_text()
             end
-            self.Text = format_text( value_source() )
         end,
 
         InputBegan = function(self: TextBox, input: InputObject)
@@ -334,82 +329,13 @@ local function create_component_input(
                 ended_connection:Disconnect()
                 drag_connection:Disconnect()
                 drag_connection = nil
+                ended_connection = nil
             end)
         end,
     }
 
     return {
         object = object,
-    }
-end
-
-local function get_index(v: any, idx: number)
-    if typeof(v) == "table" then
-        return (v::any)[idx]
-    end
-    return v
-end
-
-local function create_data_type_inputs(value: root.value<any>, options: options?)
-    local raw_value = root.read(value)
-
-    local opt = root.default(options, {}) :: options
-    local data_type = typeof(raw_value)
-    local suffix = opt.suffix
-    local id = data_type .. (suffix or "")
-
-    local align_center = opt.align_center
-    local min = opt.min or get_default("min", data_type)
-    local max = opt.max or get_default("max", data_type)
-    local step = opt.step or get_default("step", data_type)
-    local decimal_places = opt.decimal_places or get_default("decimal_places", data_type)
-
-    local component_count = get_component_count(raw_value)
-    local prefixes = get_default("prefixes", id)
-
-    local objects = {}
-    local controls = {}
-    local source = root.from(value)
-    local changed = root.event()
-
-    for idx = 1, component_count do
-        local function on_component_change(new_value: number)
-            local next_value = write_component_value(source(), idx, new_value, suffix)
-            source(next_value)
-
-            changed.fire()
-        end
-
-        local component_value_source = root.derive(function()
-            return read_component_value(source(), idx, suffix) :: number
-        end)
-        
-        local component_options: InputOptions = {
-            align = if align_center then "Center" else "Left",
-            decimal_places = get_index(decimal_places, idx),
-            min = get_index(min, idx),
-            max = get_index(max, idx),
-            step = get_index(step, idx),
-        }
-
-        local input_control = create_component_input(
-            component_count, 
-            component_value_source, 
-            prefixes[idx], 
-            component_options, 
-            on_component_change
-        )
-
-        controls[idx] = input_control
-        objects[idx] = input_control.object
-
-        root.mount(input_control.object)
-    end
-
-    return {
-        objects = objects,
-        changed = root.derive(changed.fired),
-        value = source,
     }
 end
 
@@ -423,6 +349,7 @@ local function create_button(
         Active = true,
         Text = text,
         TextXAlignment = Enum.TextXAlignment.Center,
+        Size = UDim2.fromOffset(BUTTON_SIZE, BUTTON_SIZE),
 
         paint.text(),
         paint.button(clicked.fired, hovered),
@@ -433,11 +360,6 @@ local function create_button(
             on_click(self, x, y)
         end),
     } :: GuiObject
-
-    if object.Parent and object.Parent:IsA("GuiObject") then
-        local size = object.Parent.AbsoluteSize.Y
-        object.Size = UDim2.fromOffset(size, size)
-    end
 
     root.mount(object)
     return object
@@ -467,40 +389,154 @@ local function create_increment(
 
     return root.create("Frame") {
         AutomaticSize = Enum.AutomaticSize.XY,
+        add, subtract,
 
-        add,
-        subtract,
-
-        ui.flexitem("Shrink"),
         ui.padding(config.padding),
         ui.list_layout("Horizontal", config.spacing),
     }
 end
 
-local function create_color_preview(value: source<Color3>)
+local function create_color_preview(value: value<Color3>, transparency: value<number>?)
+    local t = transparency or 0
     local object = root.create("Frame") {
-        BackgroundColor3 = value(),
+        Size = UDim2.fromOffset(BUTTON_SIZE, BUTTON_SIZE),
+        BackgroundColor3 = root.read(value),
+        BackgroundTransparency = root.read(t),
     } :: Frame
-
-    if object.Parent and object.Parent:IsA("GuiObject") then
-        local size = object.Parent.AbsoluteSize.Y
-        object.Size = UDim2.fromOffset(size, size)
-    end
 
     root.mount(object)
     return object
 end
 
+local function get_index(v: any, idx: number)
+    if typeof(v) == "table" then
+        return (v::any)[idx]
+    end
+    return v
+end
+
+local function get_component_offset(increment: boolean?, color_preview: boolean?)
+    local button_count = 0
+    if increment then button_count += 2 end
+    if color_preview then button_count += 1 end
+    return (BUTTON_SIZE + config.spacing) * button_count
+end
+
+local function create_data_type_inputs(value: root.value<any>, options: options?)
+    local raw_value = root.read(value)
+    local data_type = typeof(raw_value)
+
+    local opt = root.default(options, {}) :: options
+    local id = data_type .. (opt.id_suffix or "")
+
+    local prefixes = opt.prefix or get_default("prefixes", id)
+    local min = opt.min or get_default("min", data_type)
+    local max = opt.max or get_default("max", data_type)
+    local increment = opt.increment or get_default("increment", data_type)
+    local decimal_places = opt.decimal_places or get_default("decimal_places", data_type)
+
+    local component_count = get_component_count(raw_value)
+    local component_offset = get_component_offset(opt.has_buttons, opt.has_color_preview)
+    local component_width = UDim.new(
+        CONTAINER_WIDTH / component_count,
+        - (config.spacing + (component_offset / component_count))
+    )
+
+    local components = {}
+    local target_source = root.from(value)
+    local changed = root.event()
+
+    for i = 1, component_count do
+        local raw_component_value = read_component_value(raw_value, i)
+        local component_value = root.from(raw_component_value) :: source<number>
+
+        local function component_changed(new_value: any)
+            local value = write_component_value(raw_value, i, new_value)
+            component_value(new_value)
+            target_source(value)
+            changed.fire()
+        end
+        
+        local component_options = {
+            align = if opt.align then opt.align else "Left",
+            min = min, max = max, increment = increment,
+            prefix = get_index(prefixes, i),
+            decimal_places = get_index(decimal_places, i),
+
+            id_suffix = opt.id_suffix,
+            has_buttons = opt.has_buttons,
+            has_color_preview = opt.has_color_preview,
+        }
+
+        local object = create_input_component(
+            component_width, component_value, component_options, component_changed
+        ).object
+        root.mount(object)
+
+        components[i] = {
+            object = object,
+            value = component_value,
+        }
+        
+    end
+
+    if opt.has_buttons then
+        local src = components[1].value
+        create_increment(src, increment, function(incremented)
+            changed.fire()
+        end)
+    end
+
+    if opt.has_color_preview then
+        local src = target_source :: source<Color3>
+        create_color_preview(src)
+    end
+    
+    return {
+        changed = root.derive(changed.fired),
+        value = target_source,
+    }
+end
+
+local function create_input_label(text: string)
+    root.mount(function()
+        return root.create("TextLabel") {
+            Text = text,
+            AutomaticSize = Enum.AutomaticSize.Y,
+            TextXAlignment = Enum.TextXAlignment.Left,
+
+            Size = UDim2.fromScale(1, 0),
+
+            paint.text(),
+            paint.no_background(),
+
+            ui.flexitem("Shrink"),
+        }
+    end)
+end
+
+local function get_decimal_places(n: number)
+	local s = tostring(n)
+    local l = s:len()
+	local i = s:find("%.") or l
+	return l - i
+end
+
 return {
+    DEFAULTS = DEFAULTS,
+
+    row = row,
+    get_decimal_places = get_decimal_places,
+
     read_component_value = read_component_value,
     write_component_value = write_component_value,
     get_component_count = get_component_count,
-    create_component_input = create_component_input,
-    DEFAULTS = DEFAULTS,
+    create_input_component = create_input_component,
     is_valid_data_type = is_valid_data_type,
     get_default = get_default,
     create_data_type_inputs = create_data_type_inputs,
     create_increment = create_increment,
     create_color_preview = create_color_preview,
+    create_input_label = create_input_label,
 }
 

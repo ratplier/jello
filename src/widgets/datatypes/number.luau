@@ -3,9 +3,6 @@ local input = require("../../utils/input")
 local root = require("../../utils/rootkit")
 local ui = require("../../utils/uikit")
 
-local row = require("../format/row")
-local text = require("../text")
-
 type source<T> = root.source<T>
 type value<T> = root.value<T>
 type partial<T> = root.partial<T>
@@ -30,19 +27,11 @@ local DEFAULT_MIN = -1e6
 local DEFAULT_MAX = 1e6
 local DEFAULT_VALUE = 0
 
-local function decimal_len(n)
-	local s = tostring(n)
-    local l = s:len()
-	local i = s:find("%.") or l
-	return l - i
-end
-
 return {
-    base = ui.widget("number-input", function(arguments: partial<arguments>)
-        local changed = root.event()
+    base = ui.widget("number_input", function(arguments: partial<arguments>)
         local args = root.default(arguments, {
-            text = "input number", min = DEFAULT_MIN, max = DEFAULT_MAX,
-            value = DEFAULT_VALUE
+            text = "number input", min = DEFAULT_MIN, max = DEFAULT_MAX,
+            value = DEFAULT_VALUE, increment = 1
         }) :: arguments
 
         local state: state = {
@@ -51,34 +40,24 @@ return {
             value = root.from(args.value) :: source<number>,
         }
 
-        row({ fixed_size = true }).with(function()
+        input.row({ fixed_size = true }).with(function()
             local ctrl_pressed = root.keys_pressed("LeftControl", "RightControl")
-            local increment = if ctrl_pressed then args.increment * 100 else args.increment
+            local increment = args.increment
+            if ctrl_pressed then increment *= 100 end
             
             local inputs = input.create_data_type_inputs(state.value, {
                 min = args.min,
                 max = args.max,
                 increment = increment,
-                decimal_places = decimal_len(increment),
+                decimal_places = input.get_decimal_places(increment),
+
+                has_buttons = not args.noButtons,
             })
 
-            if inputs.changed() then
-                state.value( inputs.value() )
-                changed.fire()
-            end
-
-            root.conditional(args.noButtons ~= true, function()
-                return input.create_increment(
-                    state.value,
-                    increment,
-                    function() changed.fire() end
-                )
-            end)
-
-            text { text = args.text }
+            state.changed(inputs.changed())
+            input.create_input_label(args.text)
         end)
 
-        state.changed(changed.fired())
         return state
     end)
 }
