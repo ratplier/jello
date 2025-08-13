@@ -26,7 +26,7 @@ local DEFAULT_MAX = 255
 local DEFAULT_VALUE = Color3.new(1, 1, 1)
 
 return {
-    base = ui.widget("color3_input", function(arguments: partial<arguments>)
+    base = ui.widget("color3_input", function(arguments: partial<arguments>?)
         local args = root.default(arguments, {
             text = "color3 input", value = DEFAULT_VALUE
         }) :: arguments
@@ -46,7 +46,7 @@ return {
                 min = DEFAULT_MIN,
                 max = DEFAULT_MAX,
                 increment = increment,
-                suffix = if args.hsv then "_HSV" else "",
+                id_suffix = if args.hsv then "_HSV" else "",
 
                 has_color_preview = not args.noPreview,
             })

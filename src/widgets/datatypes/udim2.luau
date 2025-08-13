@@ -4,9 +4,6 @@ local input = require("../../utils/input")
 local root = require("../../utils/rootkit")
 local ui = require("../../utils/uikit")
 
-local row = require("../format/row")
-local text = require("../text")
-
 type source<T> = root.source<T>
 type value<T> = root.value<T>
 type partial<T> = root.partial<T>
@@ -29,10 +26,9 @@ local DEFAULT_MAX = 1e6
 local DEFAULT_VALUE = UDim2.new(0, 0, 0, 0)
 
 return {
-    base = ui.widget("udim2-input", function(arguments: partial<arguments>)
-        local changed = root.event()
+    base = ui.widget("udim2_input", function(arguments: partial<arguments>?)
         local args = root.default(arguments, {
-            text = "input udim2", min = DEFAULT_MIN, max = DEFAULT_MAX,
+            text = "udim2 input", min = DEFAULT_MIN, max = DEFAULT_MAX,
             value = DEFAULT_VALUE
         }) :: arguments
 
@@ -42,7 +38,7 @@ return {
             value = root.from(args.value) :: source<UDim2>,
         }
 
-        row({ fixed_size = true }).with(function()
+        input.row({ fixed_size = true }).with(function()
             local increment = config.default_value_increment
             local inputs = input.create_data_type_inputs(state.value, {
                 min = args.min,
@@ -50,14 +46,10 @@ return {
                 increment = increment,
             })
 
-            if inputs.changed() then
-                changed.fire()
-            end
-
-            text { text = args.text }
+            state.changed(inputs.changed())
+            input.create_input_label(args.text)
         end)
 
-        state.changed(changed.fired())
         return state
     end)
 }

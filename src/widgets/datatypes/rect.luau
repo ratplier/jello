@@ -4,9 +4,6 @@ local input = require("../../utils/input")
 local root = require("../../utils/rootkit")
 local ui = require("../../utils/uikit")
 
-local row = require("../format/row")
-local text = require("../text")
-
 type source<T> = root.source<T>
 type value<T> = root.value<T>
 type partial<T> = root.partial<T>
@@ -28,18 +25,10 @@ local DEFAULT_MIN = -1e6
 local DEFAULT_MAX = 1e6
 local DEFAULT_VALUE = Rect.new(0, 0, 0, 0)
 
-local function decimal_len(n)
-	local s = tostring(n)
-    local l = s:len()
-	local i = s:find("%.") or l
-	return l - i
-end
-
 return {
-    base = ui.widget("rect-input", function(arguments: partial<arguments>)
-        local changed = root.event()
+    base = ui.widget("rect_input", function(arguments: partial<arguments>?)
         local args = root.default(arguments, {
-            text = "input rect", min = DEFAULT_MIN, max = DEFAULT_MAX,
+            text = "rect input", min = DEFAULT_MIN, max = DEFAULT_MAX,
             value = DEFAULT_VALUE
         }) :: arguments
 
@@ -49,23 +38,19 @@ return {
             value = root.from(args.value) :: source<Rect>,
         }
 
-        row({ fixed_size = true }).with(function()
+        input.row({ fixed_size = true }).with(function()
             local increment = config.default_value_increment
             local inputs = input.create_data_type_inputs(state.value, {
                 min = args.min,
                 max = args.max,
                 increment = increment,
-                decimal_places = decimal_len(increment),
+                decimal_places = input.get_decimal_places(increment),
             })
 
-            if inputs.changed() then
-                changed.fire()
-            end
-
-            text { text = args.text }
+            state.changed(inputs.changed())
+            input.create_input_label(args.text)
         end)
 
-        state.changed(changed.fired())
         return state
     end)
 }

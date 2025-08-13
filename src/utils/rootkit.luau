@@ -74,6 +74,16 @@ function kit.from<T>(value: value<T>): source<T>
 	return kit.source(value)
 end
 
+function kit.source_changed<T>(value: source<T>): boolean
+	local val: () -> any = value
+	local last_value = kit.source( val() )
+	if last_value() ~= val() then 
+		last_value(val())
+		return true
+	end
+	return false
+end
+
 kit.derive = function<T>(fn)
 	local src = internal.source()
 	local value = internal.read(fn) :: T & any

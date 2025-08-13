@@ -449,6 +449,10 @@ local function create_data_type_inputs(value: root.value<any>, options: options?
     for i = 1, component_count do
         local raw_component_value = read_component_value(raw_value, i)
         local component_value = root.from(raw_component_value) :: source<number>
+        if root.source_changed(target_source) then
+            raw_component_value = read_component_value(raw_value, i)
+            component_value(raw_component_value :: number)
+        end
 
         local function component_changed(new_value: any)
             local value = write_component_value(raw_value, i, new_value)
@@ -483,6 +487,7 @@ local function create_data_type_inputs(value: root.value<any>, options: options?
     if opt.has_buttons then
         local src = components[1].value
         create_increment(src, increment, function(incremented)
+            target_source( src() )
             changed.fire()
         end)
     end

@@ -242,6 +242,7 @@ local function user_contents(state: state, args: arguments)
 		ScrollBarThickness = 0,
 		
 		ui.padding(10),
+		ui.flexitem("Shrink"),
 		ui.list_layout("Vertical", config.spacing)
 	}
 end

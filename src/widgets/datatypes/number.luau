@@ -28,7 +28,7 @@ local DEFAULT_MAX = 1e6
 local DEFAULT_VALUE = 0
 
 return {
-    base = ui.widget("number_input", function(arguments: partial<arguments>)
+    base = ui.widget("number_input", function(arguments: partial<arguments>?)
         local args = root.default(arguments, {
             text = "number input", min = DEFAULT_MIN, max = DEFAULT_MAX,
             value = DEFAULT_VALUE, increment = 1
