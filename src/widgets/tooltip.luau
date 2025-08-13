@@ -43,6 +43,7 @@ return ui.widget("tooltip", function(arguments: partial<arguments>?)
         ui.constrain(nil, nil, 250, nil),
         
         TextWrapped = true,
+		TextTruncate = Enum.TextTruncate.None,
         Text = root.default(args.text, "text"),
         RichText = root.default(args.richText, false),
         
