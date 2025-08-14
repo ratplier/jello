@@ -119,6 +119,46 @@ local function indent()
     end)
 end
 
+local function input()
+	local number_source = jello.source(0)
+	local no_buttons = jello.source(false)
+	jello.number { value = number_source, noButtons = no_buttons() }
+	jello.text { text = `the number is: {number_source()}` }
+	
+	local randomize = jello.button { text = "randomize number" }
+	if randomize.clicked() then
+		number_source(math.random(0, 100))
+	end
+
+	local no_buttons_checkbox = jello.checkbox { label = "no buttons" }
+	no_buttons( no_buttons_checkbox.checked() )
+
+	jello.seperator { text = "datatypes" }
+
+	jello.vector2()
+	jello.vector3()
+	jello.udim()
+	jello.udim2()
+
+	jello.seperator()
+	
+	local hsv_enabled = jello.source(false)
+	local color = jello.source(Color3.new(1, 1, 1))
+	jello.color3 { value = color, hsv = hsv_enabled() }
+
+	jello.row().with(function()
+		local hsv_checkbox = jello.checkbox { label = "hsv" }
+		hsv_enabled(hsv_checkbox.checked())
+
+		local randomize_color = jello.button { text = "randomize color" }
+		if randomize_color.clicked() then
+			local col = Color3.new( math.random(), math.random(), math.random() )
+			color(col)
+		end
+	end)
+	jello.text { text = `the color hex is #{color():ToHex()}` }
+end
+
 -- windows
 local function runtime_info()
 	local window = jello.window {
@@ -251,6 +291,7 @@ return function()
 			bind_to_section("textinput", textinput)
 			bind_to_section("group", group)
 			bind_to_section("indent", indent)
+			bind_to_section("input", input)
 		end)
 	end)
 	

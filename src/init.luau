@@ -35,6 +35,12 @@ end
 
 local datatypes = {
 	number = require(widgets.datatypes.number),
+	vector2 = require(widgets.datatypes.vector2),
+	vector3 = require(widgets.datatypes.vector3),
+	udim = require(widgets.datatypes.udim),
+	udim2 = require(widgets.datatypes.udim2),
+	color3 = require(widgets.datatypes.color3),
+	rect = require(widgets.datatypes.rect),
 }
 local jello = {
 	update_frequency = -1,
@@ -43,6 +49,12 @@ local jello = {
 	_target = nil :: Instance?,
 
 	number = datatypes.number.base,
+	vector2 = datatypes.vector2.base,
+	vector3 = datatypes.vector3.base,
+	udim = datatypes.udim.base,
+	udim2 = datatypes.udim2.base,
+	color3 = datatypes.color3.base,
+	rect = datatypes.rect.base,
 
 	row = require(widgets.format.row),
 	seperator = require(widgets.format.seperator),
