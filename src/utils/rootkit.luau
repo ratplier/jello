@@ -84,6 +84,10 @@ function kit.source_changed<T>(value: source<T>): boolean
 	return false
 end
 
+function kit.force<T>(value: source<T>): T
+	return kit.read(value)
+end
+
 kit.derive = function<T>(fn)
 	local src = internal.source()
 	local value = internal.read(fn) :: T & any
@@ -191,12 +195,6 @@ function kit.keys_pressed(...: Enum.KeyCode | string): boolean
 		end
 	end
 	return false
-end
-
-function kit.force(property: string, value: any)
-	return function(self: Instance)
-		internal.write_property(self, property, internal.read(value))
-	end
 end
 
 return kit
