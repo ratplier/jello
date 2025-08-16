@@ -1,7 +1,12 @@
 [package]
 name = "ratplier/jello"
+description = "imui/imvis library for roblox. wip"
 version = "0.1.0"
+license = "MIT"
+authors = ["ratplier"]
+
 registry = "https://github.com/UpliftGames/wally-index"
+repository = "https://github.com/ratplier/jello"
 realm = "shared"
 
 [dependencies]
