@@ -159,6 +159,21 @@ local function input()
 	jello.text { text = `the color hex is #{color():ToHex()}` }
 end
 
+local function option()
+	local selected = jello.source(1)
+	local options = { "Option 1", "Option 2", "Option 3" }
+
+	for index, option in options do
+		jello.option {
+			state = selected,
+			text = option,
+			value = index,
+		}
+	end
+
+	jello.text { text = `selected: {options[selected()]}` }
+end
+
 -- windows
 local function runtime_info()
 	local window = jello.window {
@@ -292,6 +307,7 @@ return function()
 			bind_to_section("group", group)
 			bind_to_section("indent", indent)
 			bind_to_section("input", input)
+			bind_to_section("option", option)
 		end)
 	end)
 	

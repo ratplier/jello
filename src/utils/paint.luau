@@ -133,4 +133,14 @@ function paint.radialcenter()
     return ui.apply_color("Background", colors.RadialCenter)
 end
 
+function paint.option(selected: value<boolean>?, active: value<boolean>?, hovered: value<boolean>?)
+    return ui.apply_color("Background", function()
+        return
+            if read(active) == true then colors.FrameBgActive
+            elseif read(hovered) == true then colors.FrameBgHovered
+            elseif read(selected) == true then colors.FrameBg
+            else color4.create(0, 0, 0, 0)
+    end)
+end
+
 return paint

@@ -71,6 +71,8 @@ local jello = {
 	textinput = require(widgets.textinput),
 	tooltip = require(widgets.tooltip),
 
+	option = require(widgets.option),
+
 	menubar = require(widgets.menu.menubar),
 	menu = require(widgets.menu.menu),
 }
