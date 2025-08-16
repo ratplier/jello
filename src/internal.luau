@@ -27,6 +27,16 @@ local function throw(message: string?, level: number?)
 	error(`[jello]: {message}`, (level or 0) + 1)
 end
 
+local function djb_hash(str: string)
+	local hash: number = 5381
+	for i = 1, #str do
+		local char_code = string.byte(str, i)
+		local hash_times_33 = bit32.lshift(hash, 5) + hash
+		hash = hash_times_33 + char_code
+	end
+	return  tostring(bit32.band(hash, 0xFFFFFFFF))
+end
+
 local function assert(condition: any, message: string?, level: number?)
 	if not condition then throw(message, (level or 1) + 1) end
 end
@@ -215,7 +225,7 @@ local internal = {
 	read_property = read_property,
 	write_property = write_property,
 	
-	verbose = true,
+	verbose = false,
 }
 
 function internal.profile(name: string)
@@ -257,6 +267,10 @@ function internal.gen_id(ignore_levels: number?, prefix: string?): string
 		ID = `{ID}:{line_number}`
 		ignore_levels += 1
 		line_number = debug.info(ignore_levels, "l")
+	end
+
+	if not internal.verbose then
+		ID = djb_hash(ID)
 	end
 	
 	local pushed_ids = table.concat(internal._pushed_ids, "-")
