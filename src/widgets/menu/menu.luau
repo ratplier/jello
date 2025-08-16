@@ -33,7 +33,7 @@ return ui.widget("menu", function(arguments: partial<arguments>?)
 		paint.menubutton(state.clicked, state.hovered),
 
 		ui.hovered(state.hovered),
-        ui.padding(0, config.padding),
+        ui.padding(0, config.spacing),
 		ui.clicked("Button1", function()
 			clicked.fire()
 		end),

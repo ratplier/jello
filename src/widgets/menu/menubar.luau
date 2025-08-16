@@ -15,7 +15,7 @@ return ui.widget("menubar", function()
         paint.menubar(),
         
         ui.padding(0, config.spacing),
-        ui.list_layout("Horizontal", config.spacing),
+        ui.list_layout("Horizontal", 0),
     }
 
     root.mount(menubar)
