@@ -133,12 +133,18 @@ local function input()
 	local no_buttons_checkbox = jello.checkbox { label = "no buttons" }
 	no_buttons( no_buttons_checkbox.checked() )
 
-	jello.seperator { text = "datatypes" }
+	jello.seperator()
+	jello.row().with(function()
+		jello.text { text = "datatypes" }
+		hint("ctrl click to drag, click to edit")
+	end)
 
+	jello.number()
 	jello.vector2()
 	jello.vector3()
 	jello.udim()
 	jello.udim2()
+	jello.rect()
 
 	jello.seperator()
 	
