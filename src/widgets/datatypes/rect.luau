@@ -15,6 +15,7 @@ export type state = {
 }
 export type arguments = {
     value: value<Rect>,
+    increment: number,
 
     text: string,
     min: number,
@@ -29,7 +30,7 @@ return {
     base = ui.widget("rect_input", function(arguments: partial<arguments>?)
         local args = root.default(arguments, {
             text = "rect input", min = DEFAULT_MIN, max = DEFAULT_MAX,
-            value = DEFAULT_VALUE
+            value = DEFAULT_VALUE, increment = config.default_value_increment
         }) :: arguments
 
         local state: state = {

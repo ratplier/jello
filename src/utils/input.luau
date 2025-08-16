@@ -94,9 +94,9 @@ local read_handlers: { [DataType]: (any, number) -> any } = {
 	end,
 	Color3_HSV = function(value: Color3, index: number): number
 		local h, s, v = value:ToHSV()
-		if index == 1 then return h * 360 end
-		if index == 2 then return s * 100 end
-		if index == 3 then return v * 100 end
+		if index == 1 then return h * 255 end
+		if index == 2 then return s * 255 end
+		if index == 3 then return v * 255 end
 		error("Index out of range")
 	end,
 	buffer = function(value: buffer, index: number): number
@@ -152,9 +152,9 @@ local write_handlers: { [DataType]: (any, number, any) -> any } = {
 	end,
 	Color3_HSV = function(target: Color3, index: number, value: number): Color3
 		local h, s, v = target:ToHSV()
-		if index == 1 then return Color3.fromHSV(value / 360, s, v) end
-		if index == 2 then return Color3.fromHSV(h, value / 100, v) end
-		if index == 3 then return Color3.fromHSV(h, s, value / 100) end
+		if index == 1 then return Color3.fromHSV(value / 255, s, v) end
+		if index == 2 then return Color3.fromHSV(h, value / 255, v) end
+		if index == 3 then return Color3.fromHSV(h, s, value / 255) end
 		error("Index out of range")
 	end,
 	buffer = function(target: buffer, index: number, value: number): buffer
@@ -175,15 +175,14 @@ local DEFAULTS = {
 		Rect = { "", "", "", "" },
 	},
 	decimal_places = {
-		number = { nil },
-		Vector2 = { nil, nil },
-		Vector3 = { nil, nil, nil },
-		vector = { nil, nil, nil },
-		UDim = { 3, 0 },
-		UDim2 = { 3, 0, 3, 0 },
+		number = { 0 },
+		Vector2 = { 0, 0 },
+		Vector3 = { 0, 0, 0 },
+		UDim = { 2, 0 },
+		UDim2 = { 2, 0, 2, 0 },
 		Color3 = { 0, 0, 0 },
 		Color3_HSV = { 0, 0, 0 },
-		Rect = { nil, nil, nil, nil },
+		Rect = { 0, 0, 0, 0 },
 	},
 }
 
@@ -250,9 +249,7 @@ local function create_input_component(params: component_options, options: option
 
 	local function format_text()
 		local formatted_value = value_source()
-		if decimal_places ~= nil then
-			formatted_value = string.format(`%.{decimal_places}f` :: any, formatted_value)
-		end
+		formatted_value = string.format(`%.{decimal_places}f` :: any, formatted_value)
 		return `{prefix}{formatted_value}`
 	end
 
@@ -268,6 +265,9 @@ local function create_input_component(params: component_options, options: option
 		AutomaticSize = Enum.AutomaticSize.Y,
 		ClearTextOnFocus = false,
 		TextXAlignment = text_align,
+		TextTruncate = Enum.TextTruncate.None,
+
+		ClipsDescendants = true,
 
 		Active = is_active,
 		Text = format_text,
@@ -291,7 +291,11 @@ local function create_input_component(params: component_options, options: option
 			local new_value = tonumber(text_to_parse)
 			local precision = decimal_places or DRAG_PRECISION
 
-			if new_value and truncate_number(new_value, precision) == new_value then
+			if
+				new_value and
+				truncate_number(new_value, precision) == new_value and
+				apply_modifiers(new_value, resolved_options) == new_value
+			then
 				on_change(apply_modifiers(new_value, resolved_options))
 			end
 		end,

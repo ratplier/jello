@@ -16,6 +16,7 @@ export type state = {
 export type arguments = {
     value: value<Color3>,
     text: string,
+    increment: number,
 
     noPreview: boolean?,
     hsv: boolean?,
@@ -28,7 +29,8 @@ local DEFAULT_VALUE = Color3.new(1, 1, 1)
 return {
     base = ui.widget("color3_input", function(arguments: partial<arguments>?)
         local args = root.default(arguments, {
-            text = "color3 input", value = DEFAULT_VALUE
+            text = "color3 input", value = DEFAULT_VALUE,
+            increment = config.default_value_increment
         }) :: arguments
 
         local state: state = {
@@ -39,7 +41,7 @@ return {
 
         input.row({ fixed_size = true }).with(function()
             local ctrl_pressed = root.keys_pressed("LeftControl", "RightControl")
-            local increment = config.default_value_increment
+            local increment = args.increment
             if ctrl_pressed then increment *= 100 end
 
             local inputs = input.create_data_type_inputs(state.value, {
