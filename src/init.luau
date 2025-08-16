@@ -74,6 +74,7 @@ local jello = {
 	option = require(widgets.option),
 
 	menubar = require(widgets.menu.menubar),
+	menuitem = require(widgets.menu.menuitem),
 	menu = require(widgets.menu.menu),
 }
 

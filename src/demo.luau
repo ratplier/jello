@@ -285,9 +285,27 @@ return function()
 
 	jello.window({ title = "jello demo" }).with(function(window)
 		window.menubar()
-			jello.menu("file"); jello.close()
-			jello.menu("edit"); jello.close()
-			jello.menu("view"); jello.close()
+			jello.menu("file").with(function()
+				jello.menuitem("new   ctrl + n")
+				jello.menuitem("open  ctrl + o")
+				jello.menuitem("save  ctrl + s")
+				
+				jello.seperator()
+
+				jello.menuitem("quit  ctrl + q")
+			end)
+
+			jello.menu("credits").with(function()
+				local grey = Color3.fromRGB(160, 160, 160)
+				local blue = Color3.fromRGB(33, 155, 255)
+				jello.text { text = "jello by ratplier" }
+				jello.text { text = "https://github.com/ratplier/jello", color = blue }
+
+				jello.seperator()
+
+				jello.text { text = "copyright (c) @ratplier", color = grey }
+				jello.text { text = "all rights reserved", color = grey }
+			end)
 		jello.close()
 
 		jello.row().with(function()

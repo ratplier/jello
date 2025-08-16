@@ -102,9 +102,18 @@ end
 function paint.menu(selected: value<boolean>?, hovered: value<boolean>?)
     return ui.apply_color("Background", function()
         return
-            if read(selected) == true then colors.MenuButtonSelected
-            elseif read(hovered) == true then colors.MenuButtonHovered
-            else colors.MenuButton
+            if read(selected) == true then colors.MenuSelected
+            elseif read(hovered) == true then colors.MenuHovered
+            else colors.Menu
+    end)
+end
+
+function paint.menuitem(active: value<boolean>?, hovered: value<boolean>?)
+    return ui.apply_color("Background", function()
+        return
+            if read(active) == true then colors.MenuItemActive
+            elseif read(hovered) == true then colors.MenuItemHovered
+            else colors.MenuItem
     end)
 end
 

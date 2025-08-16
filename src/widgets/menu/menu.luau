@@ -81,9 +81,9 @@ local function create_contents(object: TextButton, state: state)
 
         paint.tooltip(),
 
-        ui.padding(config.spacing),
+        ui.padding(config.padding),
         ui.constrain(nil, nil, 250, nil),
-		ui.list_layout("Vertical", config.spacing),
+		ui.list_layout("Vertical", 0),
     } :: Frame
 	
 	local base_children = root.source(#contents:GetChildren())

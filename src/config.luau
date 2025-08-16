@@ -19,9 +19,14 @@ return {
 		TitleBgCollapsed = color4.create(0, 0, 0, 0.6),
 
         Menubar = color4.create(36, 36, 36, 1),
-		MenuButton = color4.create(36, 36, 36, 1),
-		MenuButtonHovered = color4.create(41, 74, 122, 0.54),
-		MenuButtonSelected = color4.create(66, 150, 250, 0.4),
+		
+		Menu = color4.create(36, 36, 36, 1),
+		MenuHovered = color4.create(41, 74, 122, 0.54),
+		MenuSelected = color4.create(66, 150, 250, 0.4),
+
+		MenuItem = color4.create(20, 20, 20, 0.94),
+		MenuItemHovered = color4.create(66, 150, 250, 0.6),
+		MenuItemActive = color4.create(15, 135, 250, 1),
 		
 		Button = color4.create(66, 150, 250, 0.4),
 		ButtonHovered = color4.create(66, 150, 250, 0.6),
@@ -63,4 +68,6 @@ return {
 	default_value_increment = 0.1,
 	drag_delay = 0.3,
 	drag_sensitivity = 10,
+
+	menu_item_width = 75,
 }
