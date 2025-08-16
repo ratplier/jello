@@ -4,6 +4,13 @@ description = "imui/imvis library for roblox. wip"
 authors = ["ratplier"]
 license = "MIT"
 
+includes = [
+  "pesde.toml",
+  "LICENSE",
+  "README.md",
+  "src/**/*.luau",
+]
+
 [target]
 environment = "roblox"
 build_files = ["src"] 
