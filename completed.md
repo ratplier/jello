@@ -4,7 +4,7 @@ Window API
 
 Menu Widget API
   - ✅ MenuBar
-  - 📝 Menu
+  - ✅ Menu
   - ❌ MenuItem
   - ❌ MenuToggle
 

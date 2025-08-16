@@ -20,8 +20,8 @@ return {
 
         Menubar = color4.create(36, 36, 36, 1),
 		MenuButton = color4.create(36, 36, 36, 1),
-		MenuButtonHovered = color4.create(66, 150, 250, 0.4),
-		MenuButtonActive = color4.create(15, 135, 250, 1),
+		MenuButtonHovered = color4.create(41, 74, 122, 0.54),
+		MenuButtonSelected = color4.create(66, 150, 250, 0.4),
 		
 		Button = color4.create(66, 150, 250, 0.4),
 		ButtonHovered = color4.create(66, 150, 250, 0.6),

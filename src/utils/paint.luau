@@ -99,10 +99,10 @@ function paint.menubar()
     return ui.apply_color("Background", colors.Menubar)
 end
 
-function paint.menubutton(active: value<boolean>?, hovered: value<boolean>?)
+function paint.menu(selected: value<boolean>?, hovered: value<boolean>?)
     return ui.apply_color("Background", function()
         return
-            if read(active) == true then colors.MenuButtonActive
+            if read(selected) == true then colors.MenuButtonSelected
             elseif read(hovered) == true then colors.MenuButtonHovered
             else colors.MenuButton
     end)

@@ -152,15 +152,15 @@ function kit.mount(object: Instance | () -> Instance, target: (Instance | "root"
 	end
 end
 
-function kit.created(fn: () -> ())
+function kit.created(fn: (self: Instance) -> ())
 	return function(inst)
 		local id = internal._instance_to_id[inst]
 		local run = internal._vdom[id] ~= nil and internal._last_vdom[id] == nil
-		if run then fn() end
+		if run then fn( inst ) end
 	end
 end
 
-function kit.destroyed(fn: () -> ())
+function kit.destroyed(fn: (self: Instance) -> ())
 	return { Destroying = fn, } :: any
 end
 
@@ -195,6 +195,11 @@ function kit.keys_pressed(...: Enum.KeyCode | string): boolean
 		end
 	end
 	return false
+end
+
+function kit.mouse_clicked(mouse_button: string): boolean
+	local mouse = Enum.UserInputType:FromName(`Mouse{mouse_button}`)
+	return UserInputService:IsMouseButtonPressed(mouse :: Enum.UserInputType)
 end
 
 return kit

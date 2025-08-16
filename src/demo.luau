@@ -285,9 +285,9 @@ return function()
 
 	jello.window({ title = "jello demo" }).with(function(window)
 		window.menubar()
-			jello.menu { text = "file" }
-			jello.menu { text = "edit" }
-			jello.menu { text = "view" }
+			jello.menu("file"); jello.close()
+			jello.menu("edit"); jello.close()
+			jello.menu("view"); jello.close()
 		jello.close()
 
 		jello.row().with(function()
