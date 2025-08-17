@@ -18,6 +18,6 @@ return ui.widget("menubar", function()
         ui.list_layout("Horizontal", 0),
     }
 
-    root.mount(menubar)
+    ui.mount(menubar)
     return ui.start_scope(menubar)
 end)

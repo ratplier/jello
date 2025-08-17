@@ -379,7 +379,7 @@ local function create_increment(params: increment_options)
 	local add_button = create_button("+", function() on_button_click(true) end)
 	local subtract_button = create_button("-", function() on_button_click(false) end)
 
-	root.mount(function()
+	ui.mount(function()
         return root.create("Frame") {
             AutomaticSize = Enum.AutomaticSize.XY,
             BackgroundTransparency = 1,
@@ -399,7 +399,7 @@ local function create_color_preview(color_source: value<Color3>, transparency_so
 		BackgroundTransparency = root.read(transparency_source or 0),
 	}
 
-	root.mount(object)
+	ui.mount(object)
 	return object
 end
 
@@ -476,7 +476,7 @@ local function create_data_type_inputs(value: root.value<any>, options: options?
 		}
 
 		local component = create_input_component(component_params, component_options)
-		root.mount(component.object)
+		ui.mount(component.object)
 
 		table.insert(components, {
 			object = component.object,
@@ -513,7 +513,7 @@ local function create_data_type_inputs(value: root.value<any>, options: options?
 end
 
 local function create_input_label(text: string)
-	root.mount(function()
+	ui.mount(function()
 		return root.create("TextLabel") {
 			Text = text,
 			AutomaticSize = Enum.AutomaticSize.Y,

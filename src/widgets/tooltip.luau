@@ -52,6 +52,6 @@ return ui.widget("tooltip", function(arguments: partial<arguments>?)
         end),
     }
 	
-    root.mount(main, "root")
+    ui.mount(main, "root")
 	return state
 end)

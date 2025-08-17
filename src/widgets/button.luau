@@ -36,7 +36,7 @@ return ui.widget("button", function(arguments: partial<arguments>?)
 		return state.clicked() or state.right_clicked() or state.middle_clicked()
 	end)
 	
-	root.mount(function()
+	ui.mount(function()
 		return root.create("TextLabel") {
 			Active = true,
 			AutomaticSize = Enum.AutomaticSize.XY,

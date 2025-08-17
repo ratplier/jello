@@ -47,6 +47,6 @@ return ui.widget("option", function(arguments: partial<arguments>?)
 		end),
 	}
 
-	root.mount(main)
+	ui.mount(main)
 	return state
 end)

@@ -36,7 +36,7 @@ return ui.widget("image", function(arguments: partial<arguments>?)
 		hovered = root.source(false),
 	}
 	
-	root.mount(function()
+	ui.mount(function()
 		return root.create("ImageLabel") {
 			Size = UDim2.fromOffset(args.size.X, args.size.Y),
 

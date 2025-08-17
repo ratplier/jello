@@ -94,6 +94,6 @@ return ui.widget("section", function(arguments: partial<arguments>?)
         paint.no_background(),
     }
 	
-    root.mount(main)
+    ui.mount(main)
 	return ui.start_scope(contents, state)
 end)

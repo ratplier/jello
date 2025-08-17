@@ -27,6 +27,6 @@ return ui.widget("row", function(arguments: root.partial<arguments>?)
 		ui.list_layout("Horizontal", args.padding),
 	}
 
-	root.mount(object)
+	ui.mount(object)
 	return ui.start_scope(object)
 end)

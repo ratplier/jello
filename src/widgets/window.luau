@@ -346,6 +346,6 @@ return ui.widget("window", function(arguments: partial<arguments>?)
 		state.active(false)
 	end
 	
-	root.mount(main)
+	ui.mount(main)
 	return ui.start_scope(contents.user_contents, state)
 end)

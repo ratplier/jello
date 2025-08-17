@@ -13,7 +13,7 @@ return ui.widget("seperator", function(arguments: partial<arguments>?)
 	local has_text = args.text ~= nil
 	local thickness = 1
 	
-	root.mount(function()
+	ui.mount(function()
 		return root.create("Frame") {
 			AutomaticSize = Enum.AutomaticSize.Y,
 			BackgroundTransparency = 1,

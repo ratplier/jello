@@ -4,6 +4,7 @@ local Players = game:GetService("Players")
 local GuiService = game:GetService("GuiService")
 
 local internal = require("../internal")
+local root = require("./rootkit")
 local color4 = require("./color4")
 
 type source<T> = internal.source<T>
@@ -18,6 +19,18 @@ export type fillDirection = "Vertical" | "Horizontal"
 export type mouseButton = "Button1" | "Button2" | "Button3"
 export type flexMode = "Fill" | "Grow" | "Shrink"
 export type widgetConstructor<T, A...> = (A...) -> state<T>
+
+local function get_root()
+	assert(internal._target, "no root found")
+
+	local ui_root = internal._target:FindFirstChild("ui_root")
+	if not ui_root then
+		ui_root = Instance.new("Folder")
+		ui_root.Name = "ui_root"
+		ui_root.Parent = internal._target
+	end
+	return ui_root
+end
 
 local kit = {
 	drag_target = nil,
@@ -183,6 +196,13 @@ function kit.start_scope<T>(target: Instance, state: (T & any)?): scoped_state<T
 	end
 	internal.push_parent(target)
 	return state
+end
+
+function kit.mount(object: Instance | () -> Instance, target: (Instance | "root")?)
+	if internal._parent_stack_length == 0 or target == "root" then
+		target = get_root()
+	end
+	return root.mount(object, target)
 end
 
 return kit

@@ -64,7 +64,7 @@ return ui.widget("checkbox", function(arguments: partial<arguments>?)
 			text { text = args.label }
 		end
 
-		root.mount(checkbox)
+		ui.mount(checkbox)
 	end)
 	return state
 end)

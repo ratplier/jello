@@ -40,7 +40,7 @@ return ui.widget("textinput", function(arguments: partial<arguments>?)
 		end),
 	}
 	
-	root.mount(function()
+	ui.mount(function()
 		return root.create("TextBox") {
             AutomaticSize = Enum.AutomaticSize.XY,
             Size = UDim2.new(1, 0, 0, 16),

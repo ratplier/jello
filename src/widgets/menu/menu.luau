@@ -128,8 +128,8 @@ return ui.widget("menu", function(name: string?)
 	local contents = create_contents(main, state)
 	menu_manager.handle(main, state, contents)
 
-	root.mount(main)
-	root.mount(contents, "root")
+	ui.mount(main)
+	ui.mount(contents, "root")
 
 	state.clicked(clicked.fired())
 	return ui.start_scope(contents, state)

@@ -69,6 +69,6 @@ return ui.widget("radiobutton", function(arguments: partial<arguments>?)
     root.conditional(args.text ~= nil, text, { text = args.text })
     root.close_scope()
 
-    root.mount(main)
+    ui.mount(main)
     return state
 end)

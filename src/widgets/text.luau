@@ -22,7 +22,7 @@ return ui.widget("text", function(arguments: partial<arguments>?)
 		hovered = root.source(false),
 	}
 	
-	root.mount(function()
+	ui.mount(function()
 		return root.create("TextLabel") {
 			AutomaticSize = Enum.AutomaticSize.XY,
 			

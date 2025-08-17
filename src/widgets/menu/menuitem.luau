@@ -35,7 +35,7 @@ return ui.widget("menuitem", function(text: string)
         end),
     } :: TextButton
 
-    root.mount(button)
+    ui.mount(button)
 
     state.clicked(clicked.fired())
     return state

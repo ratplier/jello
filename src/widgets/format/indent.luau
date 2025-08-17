@@ -23,6 +23,6 @@ return ui.widget("indent", function(arguments: root.partial<arguments>?)
         ui.list_layout("Vertical", config.spacing),
     }
 
-    root.mount(indent)
+    ui.mount(indent)
     return ui.start_scope(indent)
 end)

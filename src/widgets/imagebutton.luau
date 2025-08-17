@@ -50,7 +50,7 @@ return ui.widget("image_button", function(arguments: partial<arguments>?)
 		return state.clicked() or state.right_clicked() or state.middle_clicked()
 	end)
 	
-	root.mount(function()
+	ui.mount(function()
 		return root.create("ImageLabel") {
 			Active = true,
 			Size = UDim2.fromOffset(args.size.X, args.size.Y),

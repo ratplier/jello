@@ -26,6 +26,6 @@ return ui.widget("group", function(arguments: root.partial<arguments>?)
 		list,
 	}
 
-	root.mount(object)
+	ui.mount(object)
 	return ui.start_scope(object)
 end)
