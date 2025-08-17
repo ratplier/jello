@@ -9,16 +9,22 @@ local internal = require(script.internal)
 export type props = internal.props
 export type source<T> = internal.source<T>
 
-local function create_target()
+local function get_target()
 	local player = Players.LocalPlayer
 	local player_gui = player and player:FindFirstChildOfClass("PlayerGui")
 	
+	assert(player_gui, "playergui not found")
+
+	if player_gui:FindFirstChild("jello_root") then
+		return player_gui:FindFirstChild("jello_root") :: ScreenGui
+	end
+
 	local root = Instance.new("ScreenGui")
 	root.IgnoreGuiInset = false
 	root.ResetOnSpawn = false
 	root.DisplayOrder = 1000
 	root.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-	root.Name = "jello-root"
+	root.Name = "jello_root"
 	root.Parent = player_gui
 	return root
 end
@@ -157,7 +163,7 @@ function jello.init(args: init_args?)
 	local no_config = args and args.no_config
 	local frequency = args and args.frequency
 	
-	local target = parent or create_target()
+	local target = parent or get_target()
 	internal.update_target(target)
 	
 	if no_init ~= true then	 
