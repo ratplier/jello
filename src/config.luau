@@ -55,6 +55,10 @@ return {
 		placeholderImage = "rbxasset://textures/ui/GuiImagePlaceholder.png",
 	},
 	
+	gizmo = {
+		defaultSubdivision = 16,
+	},
+	
 	font = Enum.Font.RobotoMono,
 	minWindowSize = vector.create(200, 100),
 	cornerRadius = 5,

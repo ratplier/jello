@@ -3,7 +3,6 @@ local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 
-local widgets = script.widgets
 local internal = require(script.internal)
 
 export type props = internal.props
@@ -39,6 +38,9 @@ local function error_handler(message: string)
 	end
 end
 
+local widgets = script.widgets
+local gizmos = script.gizmos
+
 local datatypes = {
 	number = require(widgets.datatypes.number),
 	vector2 = require(widgets.datatypes.vector2),
@@ -48,12 +50,14 @@ local datatypes = {
 	color3 = require(widgets.datatypes.color3),
 	rect = require(widgets.datatypes.rect),
 }
+
 local jello = {
 	update_frequency = -1,
 	version = "0.1.0",
 	_initialized = nil :: boolean?,
 	_target = nil :: Instance?,
 
+	-- input widgets
 	number = datatypes.number.base,
 	vector2 = datatypes.vector2.base,
 	vector3 = datatypes.vector3.base,
@@ -62,6 +66,7 @@ local jello = {
 	color3 = datatypes.color3.base,
 	rect = datatypes.rect.base,
 
+	-- formatting widgets
 	row = require(widgets.format.row),
 	seperator = require(widgets.format.seperator),
 	group = require(widgets.format.group),
@@ -69,6 +74,7 @@ local jello = {
 	section = require(widgets.format.section),
 	header = require(widgets.format.header),
 	
+	-- widgets
 	window = require(widgets.window),
 	text = require(widgets.text),
 	checkbox = require(widgets.checkbox),
@@ -82,6 +88,12 @@ local jello = {
 	menubar = require(widgets.menu.menubar),
 	menuitem = require(widgets.menu.menuitem),
 	menu = require(widgets.menu.menu),
+
+	-- gizmos
+	box = require(gizmos.box),
+	circle = require(gizmos.circle),
+	line = require(gizmos.line),
+	polyline = require(gizmos.polyline),
 }
 
 function jello.create(class_name: string)

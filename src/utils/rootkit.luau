@@ -39,6 +39,36 @@ type function _partial(object: type)
 end
 export type partial<T> = _partial<T>
 
+type function _dissolve(object: type)
+	local tag = object.tag
+
+	if tag == "union" then
+		local non_nil = {}
+		for _, component in object:components() do
+			if component.tag == "nil" then continue end
+			table.insert(non_nil, component)
+		end
+
+		if #non_nil <= 1 then
+			return non_nil[1] or types.never
+		else
+			return types.unionof(unpack(non_nil))
+		end
+	elseif tag == "table" then
+		local result = types.newtable()
+
+		for key, prop in object:properties() do
+			local unpartialedType = _dissolve(prop.read)
+			result:setproperty(key, unpartialedType)
+		end
+
+		return result
+	end
+
+	return object
+end
+export type dissolve<T> = _dissolve<T>
+
 local kit = {
 	gen_id = internal.gen_id,
 	throw = internal.throw,
@@ -201,5 +231,8 @@ function kit.mouse_clicked(mouse_button: string): boolean
 	local mouse = Enum.UserInputType:FromName(`Mouse{mouse_button}`)
 	return UserInputService:IsMouseButtonPressed(mouse :: Enum.UserInputType)
 end
+
+kit.push_id = internal.push_id
+kit.pop_id = internal.pop_id
 
 return kit
