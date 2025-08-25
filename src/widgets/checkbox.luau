@@ -18,7 +18,7 @@ export type state = {
 	clicked: source<boolean>,
 }
 export type arguments = {
-	label: string?
+	text: string?
 }
 
 return ui.widget("checkbox", function(arguments: partial<arguments>?)
@@ -60,8 +60,8 @@ return ui.widget("checkbox", function(arguments: partial<arguments>?)
 			end),
 		}
 		
-		if args.label then
-			text { text = args.label }
+		if args.text then
+			text { text = args.text }
 		end
 
 		ui.mount(checkbox)

@@ -12,7 +12,7 @@ end
 
 -- showcase
 local function checkbox()
-	jello.checkbox { label = "checkbox with label" }
+	jello.checkbox { text = "checkbox with label" }
 	
 	local box = jello.checkbox()
 	jello.text {
@@ -88,7 +88,7 @@ local function group()
     jello.group { align = "Center", padding = 10 }.with(function()
         jello.text { text = "this is inside a centered group with padding" }
         jello.button { text = "button" }
-        jello.checkbox { label = "checkbox" }
+        jello.checkbox { text = "checkbox" }
     end)
 
 	jello.seperator { text = "right aligned group" }
@@ -96,7 +96,7 @@ local function group()
 	jello.group { align = "Right", padding = 10 }.with(function()
 		jello.text { text = "This is inside a right aligned group with padding." }
         jello.button { text = "button" }
-        jello.checkbox { label = "checkbox" }
+        jello.checkbox { text = "checkbox" }
 	end)
 end
 
@@ -111,7 +111,7 @@ local function indent()
             
             jello.indent().with(function()
                 jello.text { text = "indented level 3" }
-                jello.checkbox { label = "indented checkbox" }
+                jello.checkbox { text = "indented checkbox" }
             end)
 
             jello.button { text = "indented button" }
@@ -130,7 +130,7 @@ local function input()
 		number_source(math.random(0, 100))
 	end
 
-	local no_buttons_checkbox = jello.checkbox { label = "no buttons" }
+	local no_buttons_checkbox = jello.checkbox { text = "no buttons" }
 	no_buttons( no_buttons_checkbox.checked() )
 
 	jello.seperator()
@@ -153,7 +153,7 @@ local function input()
 	jello.color3 { value = color, hsv = hsv_enabled() }
 
 	jello.row().with(function()
-		local hsv_checkbox = jello.checkbox { label = "hsv" }
+		local hsv_checkbox = jello.checkbox { text = "hsv" }
 		hsv_enabled(hsv_checkbox.checked())
 
 		local randomize_color = jello.button { text = "randomize color" }
@@ -253,7 +253,7 @@ local function recursive_window()
 		noResize = true,
 		noClose = false,
 	}
-	local checkbox = jello.checkbox { label = "recurse again" }
+	local checkbox = jello.checkbox { text = "recurse again" }
 	
 	window.size( vector.create(200, 100) )
 	jello.close()
