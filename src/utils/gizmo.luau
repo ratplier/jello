@@ -16,6 +16,8 @@ local default_state = {
 	target = workspace.Terrain,
 }
 
+type partial<T> = root.partial<T>
+
 export type vec3 = Vector3 | vector
 export type vec2 = Vector2
 
@@ -51,7 +53,7 @@ local function reconcile_state(adornment: WireframeHandleAdornment)
 	reconcile(adornment, "Adornee", state.target)
 end
 
-local function push_state(override: state)
+local function push_state(override: partial<state>)
 	local state = table.clone( get_state() )
 
 	for k, v in override :: any do
@@ -120,7 +122,7 @@ end
 local function create<T>(name: string, constructor: (T) -> ())
 	local gizmo_id = root.gen_id(1, `gizmo::{name}`)
 
-	return function(arguments: T & state)
+	return function(arguments: T)
 		push_state(arguments)
 		
 		root.push_id(gizmo_id)
