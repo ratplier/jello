@@ -11,7 +11,7 @@ type arguments = {
 return gizmo.create("polyline", function(arguments: arguments)
 	local args = root.default(arguments, {}) :: arguments
 	gizmo.draw_path(
-		arguments.points :: { Vector3 },
-		arguments.close
+		args.points :: { Vector3 },
+		args.close
 	)
 end)

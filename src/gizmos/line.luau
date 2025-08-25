@@ -11,7 +11,7 @@ type arguments = {
 return gizmo.create("line", function(arguments: arguments)
 	local args = root.default(arguments, {}) :: arguments
 	gizmo.draw_line(
-		arguments.origin :: Vector3,
-		arguments.target :: Vector3
+		args.origin :: Vector3,
+		args.target :: Vector3
 	)
 end)
