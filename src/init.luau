@@ -90,10 +90,13 @@ local jello = {
 	menu = require(widgets.menu.menu),
 
 	-- gizmos
-	box = require(gizmos.box),
-	circle = require(gizmos.circle),
 	line = require(gizmos.line),
 	polyline = require(gizmos.polyline),
+	circle = require(gizmos.circle),
+	box = require(gizmos.box),
+	sphere = require(gizmos.sphere),
+	cone = require(gizmos.cone),
+	cylinder = require(gizmos.cylinder),
 }
 
 function jello.create(class_name: string)
