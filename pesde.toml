@@ -1,5 +1,5 @@
 name = "ratplier/jello"
-version = "0.1.1"
+version = "0.2.0"
 description = "imui/imvis library for roblox. wip"
 repository = "https://github.com/ratplier/jello"
 authors = ["ratplier"]
