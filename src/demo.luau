@@ -264,8 +264,8 @@ local function recursive_window()
 end
 
 
-local function bind_checkbox_to_source(label: string, source: jello.source<boolean>)
-	local checkbox = jello.checkbox { label = label }
+local function bind_checkbox_to_source(text: string, source: jello.source<boolean>)
+	local checkbox = jello.checkbox { text = text }
 	source(checkbox.checked())
 end
 
