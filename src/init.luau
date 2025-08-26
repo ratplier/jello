@@ -167,6 +167,7 @@ type init_args = {
 	parent: Instance?,
 	no_loop: boolean?,
 	no_config: boolean?,
+	no_gizmo: boolean?,
 	frequency: number?,
 }
 
@@ -176,10 +177,16 @@ function jello.init(args: init_args?)
 	local parent = args and args.parent
 	local no_init = args and args.no_loop
 	local no_config = args and args.no_config
+	local no_gizmo = args and args.no_gizmo
 	local frequency = args and args.frequency
 	
 	local target = parent or get_target()
 	internal.update_target(target)
+	
+	if no_gizmo ~= true then
+		local gizmo_util = require("@self/utils/gizmo")
+		gizmo_util.init()
+	end
 	
 	if no_init ~= true then	 
 		local focused = true
