@@ -190,12 +190,12 @@ function kit.widget<C, T, A...>(name: string, constructor: widgetConstructor<T, 
 end
 
 function kit.start_scope<T>(target: Instance, state: (T & any)?): scoped_state<T>
-	state = if type(state) == "table" then state else {} :: T
-	(state::any).with = function(fn)
-		return internal.scope(function() fn(state) end)
+	local st = if type(state) == "table" then state else {} :: T
+	(st::any).with = function(fn)
+		return internal.scope(function() fn(st) end)
 	end
 	internal.push_parent(target)
-	return state
+	return st
 end
 
 function kit.mount(object: Instance | () -> Instance, target: (Instance | "root")?)
