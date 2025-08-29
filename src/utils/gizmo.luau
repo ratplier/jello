@@ -37,7 +37,7 @@ local function get_adornment(): WireframeHandleAdornment
 	return result :: WireframeHandleAdornment
 end
 
-local function reconcile(target, key, value)
+local function reconcile(target, key, value: unknown)
 	if target[key] == value then return end
 	target[key] = value
 end

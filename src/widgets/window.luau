@@ -8,6 +8,7 @@ local paint = require("../utils/paint")
 local extern_menubar = require("./menu/menubar")
 
 local START_POSITION = vector.create(200, 200)
+local DEFAULT_SIZE = vector.create(400, 400)
 local OFFSET_INCREMENT = vector.create(30, 30)
 
 local assets = config.assets
@@ -288,7 +289,7 @@ return ui.widget("window", function(arguments: partial<arguments>?)
 		active = root.source(true),
 		
 		position = root.source(START_POSITION),
-		size = root.source(vector.create(400, 400)),
+		size = root.source(DEFAULT_SIZE),
 		zindex = root.source(-1),
 	} :: state
 	
@@ -309,7 +310,7 @@ return ui.widget("window", function(arguments: partial<arguments>?)
 		Size = function()
 			local size = state.size()
 			local collapsed = state.collasped()
-			
+
 			return if collapsed
 				then UDim2.fromOffset(size.x, 28)
 				else UDim2.fromOffset(size.x, size.y)
@@ -345,7 +346,7 @@ return ui.widget("window", function(arguments: partial<arguments>?)
 	else
 		state.active(false)
 	end
-	
+
 	ui.mount(main)
 	return ui.start_scope(contents.user_contents, state)
 end)

@@ -101,14 +101,14 @@ local jello = {
 
 function jello.create(class_name: string)
 	return function(props: props)
-		local id = internal.gen_id(1, class_name)
+		local id = internal.gen_id(2, class_name)
 		
 		internal.define_object(id, class_name, props)
 		return internal.render(id)
 	end
 end
 
-function jello.open(target: Instance)
+function jello.open_scope(target: Instance)
 	internal.push_parent(target)
 end
 
@@ -124,7 +124,7 @@ function jello.connect(fn: () -> ()): () -> ()
 	return internal.listen(fn)
 end
 
-function jello.source<T>(default: T?): source<T>
+function jello.source<T>(default: T): source<T>
 	local id = internal.gen_id(1, "source")
 	return internal.source(default, id)
 end

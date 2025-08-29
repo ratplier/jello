@@ -195,7 +195,9 @@ local function runtime_info()
 	
 	if last_update() + 30 <= internal._tick then
 		last_update(internal._tick)
-		ms(task.wait())
+		task.spawn(function()
+			ms(task.wait())
+		end)
 	end
 
 	jello.seperator { text = "stats" }
@@ -253,9 +255,10 @@ local function recursive_window()
 		noResize = true,
 		noClose = false,
 	}
+	window.size( vector.create(200, 100) )
+	
 	local checkbox = jello.checkbox { text = "recurse again" }
 	
-	window.size( vector.create(200, 100) )
 	jello.close()
 	
 	if checkbox.checked() then

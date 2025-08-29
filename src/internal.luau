@@ -132,7 +132,7 @@ local function get_property_changes(instance: Instance, a_props: props?, b_props
 			local a, b = (a_value :: props), (b_value :: props)
 			changed_props[key] = get_property_changes(instance, a, b)
 		elseif a_value ~= b_value then
-			changed_props[key] = b_value
+			changed_props[key] = b_value :: any
 		end
 	end
 

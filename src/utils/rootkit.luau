@@ -92,7 +92,7 @@ function kit.gen_id(ignore_levels: number?, prefix: string?)
 	return internal.gen_id(ignore_levels, prefix)
 end
 
-function kit.source<T>(default: T?): source<T>
+function kit.source<T>(default: T): source<T>
 	local id = internal.gen_id(1, "create")
 	return internal.source(default, id)
 end
