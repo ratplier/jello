@@ -69,6 +69,7 @@ return {
 	spacing = 8,
 	padding = 4,
 	
+	input_width = 0.65, -- udim2 scale
 	default_value_increment = 0.1,
 	drag_delay = 0.3,
 	drag_sensitivity = 10,

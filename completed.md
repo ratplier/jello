@@ -58,7 +58,7 @@ Slider Widget API
   - ❌ Rect
 
 Combo Widget API
-  - ❌ Selectable
+  - ✅ Selectable
   - ❌ Combo
   - ❌ ComboArray
   - ❌ ComboEnum

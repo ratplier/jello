@@ -43,7 +43,6 @@ local DATA_TYPES = { "number", "Vector2", "Vector3", "vector", "UDim", "UDim2", 
 local DATA_TYPE_SIZES = { number = 1, Vector2 = 2, Vector3 = 3, vector = 3, UDim = 2, UDim2 = 4, Color3 = 3, buffer = 4, Rect = 4 }
 local DRAG_PRECISION = 12
 
-local CONTAINER_WIDTH = 0.65
 local BUTTON_SIZE = config.rowHeight + config.padding
 
 local read_handlers: { [DataType]: (any, number) -> any } = {
@@ -439,7 +438,7 @@ local function create_data_type_inputs(value: root.value<any>, options: options?
 	local component_count = get_component_count(raw_value)
 	local buttons_width = get_buttons_width(resolved_options.has_buttons, resolved_options.has_color_preview)
 	local component_width = UDim.new(
-		CONTAINER_WIDTH / component_count,
+		config.input_width / component_count,
 		-(config.spacing + (buttons_width / component_count))
 	)
 
