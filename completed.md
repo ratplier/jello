@@ -59,9 +59,9 @@ Slider Widget API
 
 Combo Widget API
   - ✅ Selectable
-  - ❌ Combo
-  - ❌ ComboArray
-  - ❌ ComboEnum
+  - ✅ Combo
+  - ❌ ComboArray (not yet)
+  - ❌ ComboEnum (not yet)
 
 Plot Widget API
   - ❌ ProgressBar
