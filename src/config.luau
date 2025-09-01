@@ -77,7 +77,7 @@ return {
 	drag_delay = 0.3,
 	drag_sensitivity = 10,
 
-	dropdown_width = 0.6, -- udim2 scale
+	dropdown_width = 0.7, -- udim2 scale
 
 	menu_item_width = 75,
 }

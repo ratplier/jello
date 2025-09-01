@@ -35,7 +35,7 @@ return ui.widget("dropdown", function(arguments: partial<arguments>?)
     local content_size = config.textSize
     local size = content_size + config.padding * 2
     local preview = root.create("TextLabel") {
-        Text = root.read(args.index),
+        Text = tostring(root.read(args.index)),
         Size = UDim2.new(config.dropdown_width, 0, 0, size),
     
         ui.padding(config.padding),
@@ -106,7 +106,7 @@ return ui.widget("dropdown", function(arguments: partial<arguments>?)
         timer(-1)
     end
 
-    row().with(function()
+    row({ fixed_size = true }).with(function()
         ui.mount(button, preview)
         ui.mount(preview)
 

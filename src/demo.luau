@@ -193,6 +193,21 @@ local function dropdown()
 			}
 		end
 	end)
+
+	local enum = Enum.UserInputType
+
+	local items = enum:GetEnumItems()
+	local enum_index = jello.source(items[1])
+
+	jello.dropdown({ index = enum_index() }).with(function()
+		for _, item in items do
+			jello.option {
+				state = enum_index,
+				text = item.Name,
+				value = item,
+			}
+		end
+	end)
 end
 
 -- windows
