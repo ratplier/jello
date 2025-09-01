@@ -180,6 +180,21 @@ local function option()
 	jello.text { text = `selected: {options[selected()]}` }
 end
 
+local function dropdown()
+	local index = jello.source("One")
+	local options = { "One", "Two", "Three" }
+
+	jello.dropdown({ index = index }).with(function()
+		for idx, value in options :: any do
+			jello.option {
+				state = index,
+				text = `Option{idx}`,
+				value = value,
+			}
+		end
+	end)
+end
+
 -- windows
 local function runtime_info()
 	local window = jello.window {
@@ -335,6 +350,7 @@ return function()
 			bind_to_section("indent", indent)
 			bind_to_section("input", input)
 			bind_to_section("option", option)
+			bind_to_section("dropdown", dropdown)
 		end)
 	end)
 	

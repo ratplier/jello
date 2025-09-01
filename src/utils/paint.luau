@@ -152,4 +152,12 @@ function paint.option(selected: value<boolean>?, active: value<boolean>?, hovere
     end)
 end
 
+function paint.dropdown(hovered: value<boolean>?)
+    return ui.apply_color("Background", function()
+        return
+            if read(hovered) == true then colors.DropdownHovered
+            else colors.Dropdown
+    end)
+end
+
 return paint

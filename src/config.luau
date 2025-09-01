@@ -40,6 +40,9 @@ return {
 		HeaderHovered = color4.create(66, 150, 250, 0.62),
 		HeaderActive = color4.create(15, 135, 250, 1),
 
+		Dropdown = color4.create(41, 74, 122, 0.54),
+		DropdownHovered = color4.create(66, 150, 250, 0.54),
+
         Tooltip = color4.create(20, 20, 20, 0.94),
 		Seperator = color4.create(99, 99, 99, 0.62),
 		RadialCenter = color4.create(66, 150, 250, 1),
@@ -73,6 +76,8 @@ return {
 	default_value_increment = 0.1,
 	drag_delay = 0.3,
 	drag_sensitivity = 10,
+
+	dropdown_width = 0.6, -- udim2 scale
 
 	menu_item_width = 75,
 }
