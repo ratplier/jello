@@ -51,6 +51,7 @@ local datatypes = {
 	rect = require(widgets.datatypes.rect),
 }
 
+
 local jello = {
 	update_frequency = -1,
 	version = "0.1.0",
@@ -82,6 +83,7 @@ local jello = {
 	radiobutton = require(widgets.radiobutton),
 	textinput = require(widgets.textinput),
 	tooltip = require(widgets.tooltip),
+	combo = require(widgets.combo),
 
 	dropdown = require(widgets.dropdown),
 	option = require(widgets.option),
