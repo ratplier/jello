@@ -11,6 +11,7 @@ local assets = config.assets
 
 type source<T> = root.source<T>
 type value<T> = root.value<T>
+type partial<T> = root.partial<T>
 
 export type state = {
     opened: source<boolean>,
@@ -27,19 +28,18 @@ export type arguments = {
     noPreview: boolean?,
 }
 
-return ui.widget("combo", function(arguments: arguments?)
+return ui.widget("combo", function(arguments: partial<arguments>?)
     local args = root.default(arguments, { 
         text = "combo",
         options = {},
     }) :: arguments
     
     local last_click = root.source(root.get_tick())
-    local clicked = root.event()
     
     local state: state = {
         opened = root.source(false),
         hovered = root.source(false),
-        selected = args.selected or root.source(args.options[1]),
+        selected = args.selected or root.source(if #args.options > 0 then args.options[1] else nil),
         clicked = root.derive(function()
             return last_click() >= root.get_tick()
         end),
@@ -65,7 +65,6 @@ return ui.widget("combo", function(arguments: arguments?)
         ui.clicked("Button1", function()
             state.opened(not state.opened())
             last_click(root.get_tick())
-            clicked.fire()
         end),
     } :: TextLabel
     
@@ -163,5 +162,5 @@ return ui.widget("combo", function(arguments: arguments?)
     end)
     
     ui.mount(contents, "root")
-    return ui.start_scope(contents, state)
+    return state
 end)
