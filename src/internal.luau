@@ -27,14 +27,20 @@ local function throw(message: string?, level: number?)
 	error(`[jello]: {message}`, (level or 0) + 1)
 end
 
+local hash_cache = {}
 local function djb_hash(str: string)
+	if hash_cache[str] then return hash_cache[str] end
+
 	local hash: number = 5381
 	for i = 1, #str do
 		local char_code = string.byte(str, i)
 		local hash_times_33 = bit32.lshift(hash, 5) + hash
 		hash = hash_times_33 + char_code
 	end
-	return  tostring(bit32.band(hash, 0xFFFFFFFF))
+
+	local result = tostring(bit32.band(hash, 0xFFFFFFFF))
+	hash_cache[str] = result
+	return result
 end
 
 local function assert(condition: any, message: string?, level: number?)
