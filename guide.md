@@ -5,10 +5,6 @@
 - [ ] Window
 
 ```luau
-type window_arguments = {
-    title: string,
-}
-
 type window_state = {
     active: read source<boolean>,
 
@@ -23,19 +19,23 @@ type window_state = {
     menubar: () -> scope,
 }
 
+type window_arguments = {
+    title: string,
+}
+
 function jello.window(window_argument): window_state
 ```
 
-- [x] Tooltip
+- [ ] Tooltip
 
 ```luau
+type tooltip_state = {
+    hovered: read source<boolean>,
+}
+
 type tooltip_arguments = {
     text: string,
     richtext: boolean?,
-}
-
-type tooltip_state = {
-    hovered: read source<boolean>,
 }
 
 function jello.tooltip(tooltip_argument): tooltip_state
@@ -55,17 +55,59 @@ end)
 ### Menu Widget API
 
 - [x] MenuBar
-- [x] Menu
-- [x] MenuItem
+
+No specific info, not very useful
+
+```luau
+function jello.menubar()
+```
+
+- [ ] Menu
+
+```luau
+type menu_state = {
+    open: read source<boolean>,
+    clicked: read event,
+    hovered: read source<boolean>,
+}
+
+function jello.menu(name: string?): menu_state
+```
+
+- [ ] MenuItem
+
+```luau
+type menu_item_state = {
+    clicked: read event,
+    hovered: read source<boolean>,
+}
+
+function jello.menu_item(text: string): menu_item_state
+```
+
 - [ ] MenuToggle
+
+```luau
+type menu_toggle_state = {
+    clicked: read event,
+    checked: read source<boolean>,
+    hovered: read source<boolean>,
+}
+
+function jello.menu_toggle(text: string): menu_toggle_state
+```
+
+Example
 
 ```luau
 window.menubar()
     jello.menu("info").with(function()
-        local lazy_load = jello.menutoggle("lazy load")
-        local about = jello.menuitem("about")
+        local lazy_load = jello.menu_toggle("lazy load")
+        local about = jello.menu_item("about")
 
-        set_lazy_load(lazy_load.checked())
+        if lazy_load.clicked() then
+            set_lazy_load(lazy_load.checked())
+        end
 
         jello.seperator()
 
@@ -77,6 +119,15 @@ jello.close()
 Format Widget API
 
 - [x] Separator
+
+```luau
+type seperator_arguments = {
+    text: string
+}
+
+function jello.seperator(seperator_arguments)
+```
+
 - [x] Indent
 - [x] SameLine (row)
 - [x] Group (column)
@@ -113,10 +164,49 @@ jello.text { text = `hello, {input.text()}` }
 
 Basic Widget API
 
-- [x] Button
-- [x] SmallButton (Button + padding)
+- [ ] Button
+- [ ] SmallButton (Button + padding)
+
+```luau
+type button_arguments = {
+    text: string,
+    padding: number?,
+}
+type button_state = {
+    clicked: read source<boolean>,
+    hovered: read source<boolean>,
+}
+
+function jello.button(button_arguments): button_state
+```
+
 - [x] Checkbox
-- [x] RadioButton
+
+```luau
+type checkbox_arguments = {
+    text: string,
+    checked: source<boolean>?,
+}
+type checkbox_state = {
+    checked: read source<boolean>,
+}
+
+function jello.checkbox(checkbox_arguments): checkbox_state
+```
+
+- [ ] RadioButton
+
+```luau
+type radiobutton_arguments = {
+    text: string,
+    index: source<any>,
+    state: any,
+}
+
+function jello.radiobutton(radiobutton_arguments): scope
+```
+
+Example
 
 ```luau
 jello.button { text = "click me", padding = -2 }
