@@ -4,7 +4,7 @@ local root = require("../utils/rootkit")
 local ui = require("../utils/uikit")
 local paint = require("../utils/paint")
 
-local TOOLTIP_OFFSET = vector.create(10, 15)
+local TOOLTIP_OFFSET = Vector2.new(10, 15)
 
 type source<T> = root.source<T>
 type partial<T> = root.partial<T>

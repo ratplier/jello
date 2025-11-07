@@ -213,8 +213,8 @@ local internal = {
 	_instance_to_id = instance_to_id,
 	_used_ids = {} :: { [id]: number },
 	_pushed_ids = {} :: { id },
-	_vdom = {} :: { [id]: object },
-	_last_vdom = {} :: { [id]: object },
+	_vdom = {} :: { [id]: object<props> }, --// pass the generic to fix the type issue
+	_last_vdom = {} :: { [id]: object<props> },
 	_instance_metadata = instance_metadata,
 
 	_parent_stack = {} :: { Instance },
