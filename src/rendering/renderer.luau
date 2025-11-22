@@ -1,4 +1,4 @@
-local draw_call = require("@self/draw_call")
+local draw_call = require("./draw_call")
 
 type draw_call = draw_call.draw_call
 type draw_call_kind = draw_call.draw_call_kind
