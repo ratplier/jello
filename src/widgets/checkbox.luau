@@ -1,4 +1,3 @@
-
 local config = require("../config")
 local root = require("../utils/rootkit")
 local ui = require("../utils/uikit")

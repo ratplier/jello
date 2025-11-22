@@ -1,4 +1,3 @@
-
 local UserInputService = game:GetService("UserInputService")
 
 local root = require("./rootkit")

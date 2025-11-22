@@ -1,4 +1,3 @@
-
 local root = require("../../utils/rootkit")
 local ui = require("../../utils/uikit")
 local paint = require("../../utils/paint")

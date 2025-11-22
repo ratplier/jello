@@ -1,4 +1,3 @@
-
 type id = string
 
 type object<P=props> = {
