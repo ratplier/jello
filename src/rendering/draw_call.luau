@@ -1,4 +1,4 @@
-local color4 = require("./color4")
+local color4 = require("../datatypes/color4")
 type color4 = color4.color4
 
 export type draw_call_kind =
