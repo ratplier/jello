@@ -1,4 +1,4 @@
---!strict
+
 local root = require("./rootkit")
 
 local adornments = {

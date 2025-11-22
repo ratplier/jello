@@ -1,4 +1,4 @@
---!strict
+
 local UserInputService = game:GetService("UserInputService")
 
 local internal = require("../internal")

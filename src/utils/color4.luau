@@ -1,4 +1,4 @@
---!strict
+
 local color4 = {}
 
 export type color4 = buffer

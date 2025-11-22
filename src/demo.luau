@@ -1,4 +1,4 @@
---!strict
+
 local jello = require("./")
 local internal = require("./internal")
 

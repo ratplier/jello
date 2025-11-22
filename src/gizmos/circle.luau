@@ -1,4 +1,4 @@
---!strict
+
 local config = require("../config")
 local root = require("../utils/rootkit")
 local gizmo = require("../utils/gizmo")

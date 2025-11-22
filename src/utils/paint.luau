@@ -1,4 +1,4 @@
---!strict
+
 local ui = require("./uikit")
 local root = require("./rootkit")
 local config = require("../config")

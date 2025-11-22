@@ -1,4 +1,4 @@
---!strict
+
 local config = require("../../config")
 local input = require("../../utils/input")
 local root = require("../../utils/rootkit")

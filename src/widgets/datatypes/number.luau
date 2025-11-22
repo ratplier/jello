@@ -1,4 +1,4 @@
---!strict
+
 local input = require("../../utils/input")
 local root = require("../../utils/rootkit")
 local ui = require("../../utils/uikit")
