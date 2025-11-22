@@ -1,22 +1,22 @@
 local color4 = require("../datatypes/color4")
 local rect = require("../datatypes/rect")
 
-type rect = rect.rect
+type bounds = rect.rect
 type color4 = color4.color4
 
 export type draw_call_kind =
     | "rect"
 
-type base_draw_call<T, kind = draw_call_kind> = {
+type call<T, kind = draw_call_kind> = {
     id: number,
     kind: kind,
 } & T
 
-export type draw_rect = base_draw_call<{
-    bounds: rect,
+export type rect = call<{
+    bounds: bounds,
     color: color4,
 }, "rect">
 
-export type draw_call = draw_rect
+export type draw_call = rect
 
 return {}

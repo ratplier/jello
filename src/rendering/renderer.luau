@@ -3,10 +3,10 @@ local draw_call = require("./draw_call")
 type draw_call = draw_call.draw_call
 type draw_call_kind = draw_call.draw_call_kind
 
-export type dispatch_fn = (draw_calls: { draw_call }) -> ()
+export type dispatch = (draw_calls: { draw_call }) -> ()
 export type renderer = {
     draw_calls: { draw_call },
-    dispatch_callback: dispatch_fn,
+    dispatch_callback: dispatch,
     
     push: (self: renderer, draw_call: draw_call) -> (),
     dispatch: (self: renderer) -> (),
@@ -14,7 +14,7 @@ export type renderer = {
 
 local renderer = {}
 
-function renderer.create(dispatch: dispatch_fn): renderer
+function renderer.create(dispatch: dispatch): renderer
     local self = {
         draw_calls = {},
         dispatch_callback = dispatch,

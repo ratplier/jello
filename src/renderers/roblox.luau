@@ -1,16 +1,17 @@
 local renderer = require("../rendering/renderer")
-local color4 = require("../datatypes/color4")
 local draw_call = require("../rendering/draw_call")
 
-type color4 = color4.color4
+local color4 = require("../datatypes/color4")
+local rect = require("../datatypes/rect")
 
+type color4 = color4.color4
+type rect = rect.rect
 type draw_call = draw_call.draw_call
-type draw_rect = draw_call.draw_rect
-type draw_text = draw_call.draw_text
 
 type id = number
 type data = {
     object: GuiObject,
+    last_seen: number,
     [unknown]: unknown,
 }
 
@@ -78,7 +79,7 @@ end
 
 local resolver = {}
 
-function resolver.rect(self: renderer_state, draw_call: draw_rect)
+function resolver.rect(self: renderer_state, draw_call: draw_call.rect)
     local id = draw_call.id
     renew_entry(self, id, function()
         local frame = Instance.new("Frame")
