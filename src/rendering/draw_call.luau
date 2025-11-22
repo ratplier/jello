@@ -1,4 +1,7 @@
 local color4 = require("../datatypes/color4")
+local rect = require("../datatypes/rect")
+
+type rect = rect.rect
 type color4 = color4.color4
 
 export type draw_call_kind =
@@ -11,8 +14,7 @@ type base_draw_call<T, kind = draw_call_kind> = {
 } & T
 
 export type draw_rect = base_draw_call<{
-    position: vector,
-    size: vector,
+    bounds: rect,
     color: color4,
 }, "rect">
 
