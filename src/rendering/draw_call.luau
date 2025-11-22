@@ -6,7 +6,8 @@ export type draw_call_kind =
     | "text"
 
 type base_draw_call<T, kind = draw_call_kind> = {
-    kind: kind
+    id: number,
+    kind: kind,
 } & T
 
 export type draw_rect = base_draw_call<{
