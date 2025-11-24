@@ -24,4 +24,8 @@ function color4.component(col: color4, index: number): number
     return buffer.readf32(col, (index - 1) * 4)
 end
 
+function color4.is_color4(value: unknown): boolean
+    return type(value) == "buffer" and buffer.len(value) == 16
+end
+
 return color4

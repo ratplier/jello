@@ -47,7 +47,7 @@ local function one(): rect
 	return rect(1, 1, 1, 1)
 end
 
-local function is(unknown: unknown): boolean
+local function is_rect(unknown: unknown): boolean
 	return
 		type(unknown) == "table" and
 		type((unknown :: any).min) == "vector" and
@@ -61,5 +61,5 @@ return {
     zero = zero,
     one = one,
 
-	is = is,
+	is_rect = is_rect,
 }

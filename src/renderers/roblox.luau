@@ -133,6 +133,39 @@ function resolver.end_clip(self: renderer_state, draw_call: draw_call.end_clip)
     table.remove(self.parent_stack)
 end
 
+function resolver.text(self: renderer_state, draw_call: draw_call.text)
+    local id = draw_call.id
+    renew_entry(self, id, function()
+        local label = Instance.new("TextLabel")
+        label.BackgroundTransparency = 1
+        return label
+    end)
+
+    local label = self.data[id].object :: TextLabel
+
+    local position = get_relative_position(self, draw_call.bounds.min)
+    local size = draw_call.bounds.max - draw_call.bounds.min
+
+    assign(label, "Position", position)
+    assign(label, "Size", size)
+    assign(label, "Text", draw_call.text)
+    assign(label, "TextColor3", draw_call.color)
+    assign(label, "TextSize", draw_call.size)
+    assign(label, "TextWrapped", draw_call.wrap)
+    assign(label, "TextXAlignment",
+        if draw_call.align == "left" then Enum.TextXAlignment.Left
+        elseif draw_call.align == "center" then Enum.TextXAlignment.Center
+        else Enum.TextXAlignment.Right
+    )
+    assign(label, "FontFace", Font.fromName(
+        tostring(draw_call.font),
+        Enum.FontWeight.Regular,
+        Enum.FontStyle.Normal
+    ))
+
+    assign(label, "Parent", get_parent(self))
+end
+
 local roblox = {}
 
 function roblox.create_renderer_state(): renderer_state
@@ -173,6 +206,10 @@ function roblox.generate_renderer(self: renderer_state)
             
             if draw_call.kind == "end_clip" then
                 resolver.end_clip(self, draw_call :: draw_call.end_clip)
+            end
+
+            if draw_call.kind == "text" then
+                resolver.text(self, draw_call :: draw_call.text)
             end
         end
         

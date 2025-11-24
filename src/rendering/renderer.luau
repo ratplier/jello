@@ -25,8 +25,13 @@ function renderer.create(dispatch: dispatch): renderer
     return self
 end
 
-function renderer.push(self: renderer, draw_call: draw_call)
-    table.insert(self.draw_calls, draw_call)
+function renderer.push(self: renderer, call: draw_call)
+    assert(
+        draw_call.is_draw_call(call),
+        "Invalid draw call pushed to renderer"
+    )
+
+    table.insert(self.draw_calls, call)
 end
 
 function renderer.dispatch(self: renderer)
