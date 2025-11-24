@@ -6,7 +6,11 @@ type rect_ctor =
 	& ( ({ number }) -> rect )
 
 local function rect(a: any, b: any, c: any, d: any): rect
-	if typeof(a) == "table" then
+	if type(a) == "table" then
+		if type(a.min) == "vector" and type(a.max) == "vector" then
+			return a
+		end
+
 		local tmp: any = a
 		a, b, c, d = tmp[1], tmp[2], tmp[3], tmp[4]
 	end
@@ -14,10 +18,10 @@ local function rect(a: any, b: any, c: any, d: any): rect
 	local minv, maxv = a, b
 	if type(minv) ~= "vector" or type(maxv) ~= "vector" then
 		assert(
-			typeof(a) == "number" and
-			typeof(b) == "number" and
-			typeof(c) == "number" and
-			typeof(d) == "number",
+			type(a) == "number" and
+			type(b) == "number" and
+			type(c) == "number" and
+			type(d) == "number",
 		
 			"Invalid arguments to rect"
 		)
@@ -45,7 +49,7 @@ end
 
 local function is(unknown: unknown): boolean
 	return
-		typeof(unknown) == "table" and
+		type(unknown) == "table" and
 		type((unknown :: any).min) == "vector" and
 		type((unknown :: any).max) == "vector"
 end
