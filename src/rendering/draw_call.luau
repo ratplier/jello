@@ -10,7 +10,7 @@ export type draw_call_kind =
     | "end_clip"
 
 export type rect = {
-    kind: draw_call_kind,
+    kind: "rect",
     id: number,
 
     bounds: bounds,
@@ -18,14 +18,14 @@ export type rect = {
 }
 
 export type clip = {
-    kind: draw_call_kind,
+    kind: "clip",
     id: number,
 
     bounds: bounds,
 }
 
 export type end_clip = {
-    kind: draw_call_kind,
+    kind: "end_clip",
     id: number,
 }
 
