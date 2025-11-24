@@ -6,17 +6,32 @@ type color4 = color4.color4
 
 export type draw_call_kind =
     | "rect"
+    | "clip"
+    | "end_clip"
 
-type call<T, kind = draw_call_kind> = {
+export type rect = {
+    kind: draw_call_kind,
     id: number,
-    kind: kind,
-} & T
 
-export type rect = call<{
     bounds: bounds,
     color: color4,
-}, "rect">
+}
 
-export type draw_call = rect
+export type clip = {
+    kind: draw_call_kind,
+    id: number,
+
+    bounds: bounds,
+}
+
+export type end_clip = {
+    kind: draw_call_kind,
+    id: number,
+}
+
+export type draw_call =
+    | rect
+    | clip
+    | end_clip
 
 return {}
