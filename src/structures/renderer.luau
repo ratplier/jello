@@ -1,7 +1,39 @@
-local draw_call = require("./draw_call")
+local rgba = require("../datatypes/rgba")
+local aabb = require("../datatypes/aabb")
 
-type draw_call = draw_call.draw_call
-type draw_call_kind = draw_call.draw_call_kind
+type aabb = aabb.aabb
+type rgba = rgba.rgba
+
+export type rect = {
+    kind: "rect",
+    bounds: aabb,
+    color: rgba,
+}
+
+export type clip = {
+    kind: "clip",
+    bounds: aabb,
+}
+
+export type end_clip = {
+    kind: "end_clip",
+}
+
+export type text_alignment = "left" | "center" | "right"
+export type text<font = unknown> = {
+    kind: "text",
+    font: font,
+    
+    text: string,
+    bounds: aabb,
+    color: rgba,
+    
+    size: number,
+    align: text_alignment,
+    wrap: boolean,
+}
+
+export type draw_call = rect | clip | end_clip | text
 
 export type dispatch = (draw_calls: { draw_call }) -> ()
 export type renderer = {
@@ -26,11 +58,6 @@ function renderer.create(dispatch: dispatch): renderer
 end
 
 function renderer.push(self: renderer, call: draw_call)
-    assert(
-        draw_call.is_draw_call(call),
-        "Invalid draw call pushed to renderer"
-    )
-
     table.insert(self.draw_calls, call)
 end
 
