@@ -3,6 +3,10 @@
 immediate mode visualization library
 inspired by iris and imgui
 
+> [!NOTE]
+> jello is being worked on internally at [blacksock](https://github.com/ablacksock)  
+> that version will be publicly available soon
+
 guide: [guide.md](guide.md)
 
 ## quickstart
